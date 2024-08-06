@@ -1,35 +1,40 @@
-import React, { useState } from "react";
+import React from "react";
 import { Label } from "../../components/Labels";
 import { TextInput } from "../../components/TextInput";
 import { AuthButton } from "../../components/Buttons";
 import { A } from "../../components/Links";
 import { useRegisterFormik } from "../../formik/authooks";
 import { ShowFormikError } from "../../components/Errors";
+import docmetadata from "../../utils/docmetadata";
+import { useRegisterMutation } from "../../apis/auth/queryHooks";
+import { useNavigate } from "react-router-dom";
+import ROUTES from "../../routes";
+import formikApiErrorHandler from "../../formik/errorhandlers/formikApiErrorHandler";
+import apierrorhandler from "../../utils/apierrorhandler";
 
-const OTPVerification = ({ data }) => {
-  return (
-    <form>
-      <div>
-        <p>Email have been sent to your email address.</p>
-        <p>Please enter the OTP provided in the email.</p>
-      </div>
-      <div className="mt-4">
-        <Label>
-          Verify OTP for <span className="font-semibold">({data.email})</span>
-        </Label>
-        <TextInput name="otp" placeholder="Enter OTP" className="w-full mt-2" />
-      </div>
+const Form = () => {
+  const navigate = useNavigate();
+  const { mutate, isLoading } = useRegisterMutation({
+    onSuccess: (data) => {
+      navigate(ROUTES.EMAIL_VERIFICATION, {
+        state: data.data,
+      });
+    },
+    onError: (error) => {
+      apierrorhandler(error, {
+        400: () =>
+          formikApiErrorHandler.setErrors_400(
+            formik,
+            error.response.data.errors
+          ),
+      });
+    },
+  });
 
-      <div className="mt-4">
-        <AuthButton type="submit">Verify</AuthButton>
-      </div>
-    </form>
-  );
-};
-
-const AskDetails = ({ onSubmit }) => {
   const formik = useRegisterFormik({
-    onSubmit: onSubmit,
+    onSubmit: (values) => {
+      mutate(values);
+    },
   });
 
   return (
@@ -70,29 +75,23 @@ const AskDetails = ({ onSubmit }) => {
       </div>
 
       <div className="mt-4">
-        <AuthButton type="submit">Sign Up</AuthButton>
+        <AuthButton type="submit" disabled={isLoading}>
+          {isLoading ? "Please Wait..." : "Sign Up"}
+        </AuthButton>
       </div>
 
       <div className="mt-4 text-center">
-        Already have an account? <A href="/login">Log In</A>
+        Already have an account? <A href={ROUTES.LOGIN}>Log In</A>
       </div>
     </form>
   );
 };
 
-const Form = () => {
-  const [data, setData] = useState();
-
-  const onDetails = (values) => {
-    setData(values);
-  };
-
-  if (data) return <OTPVerification data={data} />;
-
-  return <AskDetails onSubmit={onDetails} />;
-};
-
 const Register = () => {
+  docmetadata({
+    title: "Sign Up - SpeakEasy",
+  });
+
   return (
     <div className="w-screen h-screen bg-auth-screen">
       <div className="min-w-[280px] max-w-[520px] h-screen bg-auth-card p-12 border-r-2">
