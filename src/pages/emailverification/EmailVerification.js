@@ -90,7 +90,7 @@ const Form = ({ data }) => {
 
 const EmailVerification = () => {
   docmetadata({
-    title: "Verify Email",
+    title: "Verify Email - SpeakEasy",
   });
 
   const data = useLocation().state;
