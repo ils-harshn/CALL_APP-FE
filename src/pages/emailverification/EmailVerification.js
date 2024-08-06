@@ -7,16 +7,42 @@ import docmetadata from "../../utils/docmetadata";
 import ROUTES from "../../routes";
 import { useLocation } from "react-router-dom";
 import authvalidators from "../../validators/authvalidators";
+import { useVerifyEmailFormik } from "../../formik/authooks";
+import { ShowFormikError } from "../../components/Errors";
+import {
+  useResendVerifyEmailOTPMutation,
+  useVerifyEmailMutation,
+} from "../../apis/auth/queryHooks";
+import apierrorhandler from "../../utils/apierrorhandler";
+import formikApiErrorHandler from "../../formik/errorhandlers/formikApiErrorHandler";
 
-const ResendOTP = () => {
+const ResendOTP = ({ data, formik }) => {
   const RESEND_OTP_AFTER = 30;
   const [resendDisabled, setResendDisabled] = useState(true);
   const [showAlternative, setShowAlternative] = useState(false);
   const [countdown, setCountdown] = useState(RESEND_OTP_AFTER);
 
+  const { mutate, isLoading } = useResendVerifyEmailOTPMutation({
+    onSuccess: () => {
+      setResendDisabled(true);
+      setShowAlternative(true);
+    },
+    onError: (error) => {
+      setResendDisabled(true);
+      apierrorhandler(error, {
+        400: () =>
+          formikApiErrorHandler.setErrors_400(
+            formik,
+            error.response.data.errors
+          ),
+      });
+    },
+  });
+
   const handleResendOTP = () => {
-    setResendDisabled(true);
-    setShowAlternative(true);
+    mutate({
+      email: data.email,
+    });
   };
 
   useEffect(() => {
@@ -37,7 +63,7 @@ const ResendOTP = () => {
       <div className="mt-4">
         <SecondaryButton
           type="button"
-          disabled={resendDisabled}
+          disabled={resendDisabled || isLoading}
           onClick={handleResendOTP}
         >
           {resendDisabled ? `Resend OTP (${countdown}s)` : "Resend OTP"}
@@ -63,12 +89,32 @@ const ResendOTP = () => {
 };
 
 const Form = ({ data }) => {
+  const { mutate, isLoading } = useVerifyEmailMutation({
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      apierrorhandler(error, {
+        400: () =>
+          formikApiErrorHandler.setErrors_400(
+            formik,
+            error.response.data.errors
+          ),
+      });
+    },
+  });
+
+  const formik = useVerifyEmailFormik({
+    onSubmit: (values) => {
+      mutate({
+        email: data.email,
+        otp: values.otp,
+      });
+    },
+  });
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
+    <form onSubmit={formik.handleSubmit}>
       <div>
         <p>Email have been sent to your email address.</p>
         <p>Please enter the OTP provided in the email.</p>
@@ -77,13 +123,21 @@ const Form = ({ data }) => {
         <Label>
           Verify OTP for <span className="font-semibold">({data.email})</span>
         </Label>
-        <TextInput name="otp" placeholder="Enter OTP" className="w-full mt-2" />
+        <TextInput
+          name="otp"
+          placeholder="Enter OTP"
+          className="w-full mt-2"
+          {...formik.getFieldProps("otp")}
+        />
+        <ShowFormikError formik={formik} name="otp" />
       </div>
 
       <div className="mt-4">
-        <AuthButton type="submit">Verify</AuthButton>
+        <AuthButton type="submit" disabled={isLoading}>
+          {isLoading ? "Verifying..." : "Verify"}
+        </AuthButton>
       </div>
-      <ResendOTP />
+      <ResendOTP data={data} formik={formik} />
     </form>
   );
 };

@@ -1,6 +1,19 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
+export const useVerifyEmailFormik = ({ ...props }) =>
+  useFormik({
+    initialValues: {
+      otp: "",
+    },
+    validationSchema: Yup.object().shape({
+      otp: Yup.string()
+        .matches(/^[0-9]{6}$/, "OTP should be a 6 digit number")
+        .required("OTP is required"),
+    }),
+    ...props,
+  });
+
 export const useRegisterFormik = ({ ...props }) =>
   useFormik({
     initialValues: {
