@@ -42,7 +42,7 @@ const Form = () => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <div>
-        <Label htmlFor="username">Username</Label>
+        <Label>Username</Label>
         <TextInput
           name="username"
           placeholder="Enter Username"
@@ -53,7 +53,7 @@ const Form = () => {
         <ShowFormikError formik={formik} name="username" />
       </div>
       <div className="mt-4">
-        <Label htmlFor="email">Email Address</Label>
+        <Label>Email Address</Label>
         <TextInput
           name="email"
           placeholder="Enter Email Address"
@@ -64,7 +64,7 @@ const Form = () => {
         <ShowFormikError formik={formik} name="email" />
       </div>
       <div className="mt-4">
-        <Label htmlFor="password">Password</Label>
+        <Label>Password</Label>
         <TextInput
           name="password"
           placeholder="Enter Password"

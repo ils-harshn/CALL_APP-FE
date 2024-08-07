@@ -94,7 +94,7 @@ const Form = ({ data }) => {
   const navigate = useNavigate();
 
   const { mutate, isLoading } = useVerifyEmailMutation({
-    onSuccess: (data) => {
+    onSuccess: () => {
       notify.info("Account created successfully");
       notify.info("You can now login!");
       navigate(ROUTES.LOGIN);

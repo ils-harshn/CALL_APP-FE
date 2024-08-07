@@ -1,4 +1,4 @@
-import api from "../api";
+import api, { authApi } from "../api";
 import ENDPOINTS from "../endpoints";
 
 export const registerUser = async (payload) => {
@@ -24,6 +24,23 @@ export const resendVerifyEmailOTP = async (payload) => {
     method: "post",
     url: ENDPOINTS.resendverifyemailOTP,
     data: payload,
+  });
+  return response.data;
+};
+
+export const login = async (payload) => {
+  const response = await api({
+    method: "post",
+    url: ENDPOINTS.login,
+    data: payload,
+  });
+  return response.data;
+};
+
+export const profile = async () => {
+  const response = await authApi({
+    method: "get",
+    url: ENDPOINTS.profile,
   });
   return response.data;
 };

@@ -8,4 +8,24 @@ const api = (config) => {
   });
 };
 
+export const authApi = (config) => {
+  const token = localStorage.getItem("token");
+
+  const defaultConfig = {
+    baseURL: BASE_URL,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  if (token) {
+    defaultConfig.headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return axios({
+    ...defaultConfig,
+    ...config,
+  });
+};
+
 export default api;

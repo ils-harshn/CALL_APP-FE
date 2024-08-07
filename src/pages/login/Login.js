@@ -7,10 +7,30 @@ import { useLoginFormik } from "../../formik/authooks";
 import { ShowFormikError } from "../../components/Errors";
 import docmetadata from "../../utils/docmetadata";
 import ROUTES from "../../routes";
+import { useLoginMutation } from "../../apis/auth/queryHooks";
+import apierrorhandler from "../../utils/apierrorhandler";
+import formikApiErrorHandler from "../../formik/errorhandlers/formikApiErrorHandler";
+import notify from "../../utils/notify";
 
 const Form = () => {
+  const { mutate, isLoading } = useLoginMutation({
+    onSuccess: (values) => {
+      localStorage.setItem("token", values.token);
+      notify.info("Logged in successfully!");
+    },
+    onError: (error) => {
+      apierrorhandler(error, {
+        400: () =>
+          formikApiErrorHandler.setErrors_400(
+            formik,
+            error.response.data.errors
+          ),
+      });
+    },
+  });
+
   const handleSubmit = (values) => {
-    console.log(values);
+    mutate(values);
   };
 
   const formik = useLoginFormik({
@@ -20,7 +40,7 @@ const Form = () => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="mt-4">
-        <Label htmlFor="email">Email Address</Label>
+        <Label>Email Address</Label>
         <TextInput
           name="email"
           placeholder="Enter Email Address"
@@ -31,7 +51,7 @@ const Form = () => {
         <ShowFormikError formik={formik} name="email" />
       </div>
       <div className="mt-4">
-        <Label htmlFor="password">Password</Label>
+        <Label>Password</Label>
         <TextInput
           name="password"
           placeholder="Enter Password"
@@ -44,7 +64,9 @@ const Form = () => {
       </div>
 
       <div className="mt-4">
-        <AuthButton type="submit">Log In</AuthButton>
+        <AuthButton type="submit" disabled={isLoading}>
+          {isLoading ? "Please Wait..." : "Log In"}
+        </AuthButton>
       </div>
 
       <div className="mt-4 text-center">

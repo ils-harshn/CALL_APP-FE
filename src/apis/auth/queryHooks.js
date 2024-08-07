@@ -1,6 +1,8 @@
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import QUERY_KEYS from "../queryKeys";
 import {
+  login,
+  profile,
   registerUser,
   resendVerifyEmailOTP,
   verifyEmail,
@@ -31,6 +33,22 @@ export const useResendVerifyEmailOTPMutation = (config = {}) =>
   useMutation({
     mutationFn: (payload) => resendVerifyEmailOTP(payload),
     mutationKey: [QUERY_KEYS.RESEND_VERIFY_EMAIL_OTP],
+    ...commonConfig,
+    ...config,
+  });
+
+export const useLoginMutation = (config = {}) =>
+  useMutation({
+    mutationFn: (payload) => login(payload),
+    mutationKey: [QUERY_KEYS.LOGIN],
+    ...commonConfig,
+    ...config,
+  });
+
+export const useProfile = (config = {}) =>
+  useQuery({
+    queryKey: [QUERY_KEYS.PROFILE],
+    queryFn: profile,
     ...commonConfig,
     ...config,
   });
