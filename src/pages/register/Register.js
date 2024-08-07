@@ -11,11 +11,13 @@ import { useNavigate } from "react-router-dom";
 import ROUTES from "../../routes";
 import formikApiErrorHandler from "../../formik/errorhandlers/formikApiErrorHandler";
 import apierrorhandler from "../../utils/apierrorhandler";
+import notify from "../../utils/notify";
 
 const Form = () => {
   const navigate = useNavigate();
   const { mutate, isLoading } = useRegisterMutation({
     onSuccess: (data) => {
+      notify.info("OTP has been send to your email.");
       navigate(ROUTES.EMAIL_VERIFICATION, {
         state: data.data,
       });

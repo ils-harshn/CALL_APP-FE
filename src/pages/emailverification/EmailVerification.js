@@ -5,7 +5,7 @@ import { Label } from "../../components/Labels";
 import { A } from "../../components/Links";
 import docmetadata from "../../utils/docmetadata";
 import ROUTES from "../../routes";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import authvalidators from "../../validators/authvalidators";
 import { useVerifyEmailFormik } from "../../formik/authooks";
 import { ShowFormikError } from "../../components/Errors";
@@ -15,6 +15,7 @@ import {
 } from "../../apis/auth/queryHooks";
 import apierrorhandler from "../../utils/apierrorhandler";
 import formikApiErrorHandler from "../../formik/errorhandlers/formikApiErrorHandler";
+import notify from "../../utils/notify";
 
 const ResendOTP = ({ data, formik }) => {
   const RESEND_OTP_AFTER = 30;
@@ -24,6 +25,7 @@ const ResendOTP = ({ data, formik }) => {
 
   const { mutate, isLoading } = useResendVerifyEmailOTPMutation({
     onSuccess: () => {
+      notify.info("OTP resend successfully");
       setResendDisabled(true);
       setShowAlternative(true);
     },
@@ -89,9 +91,13 @@ const ResendOTP = ({ data, formik }) => {
 };
 
 const Form = ({ data }) => {
+  const navigate = useNavigate();
+
   const { mutate, isLoading } = useVerifyEmailMutation({
     onSuccess: (data) => {
-      console.log(data);
+      notify.info("Account created successfully");
+      notify.info("You can now login!");
+      navigate(ROUTES.LOGIN);
     },
     onError: (error) => {
       apierrorhandler(error, {
