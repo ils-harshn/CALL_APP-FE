@@ -9,6 +9,7 @@ import { IoIosSettings } from "react-icons/io";
 import { RiShutDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import ROUTES from "../../../routes";
+import notify from "../../../utils/notify";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Logout = () => {
   const logout = () => {
     localStorage.clear();
     navigate(ROUTES.LOGIN);
+    notify.info("Logged out successfully!");
   };
 
   return (

@@ -4,7 +4,7 @@ import { CheckLogin } from "../layouts/protectors";
 const Home = () => {
   return (
     <CheckLogin>
-      <Main>
+      <Main docmeta={{ title: "Dashboard - SpeakEasy" }}>
         <div className="flex-grow">
           <h2>Wow</h2>
         </div>
