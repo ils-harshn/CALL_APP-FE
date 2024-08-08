@@ -1,3 +1,5 @@
+import React from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./Loaders.module.css";
 import Logo from "../../images/logo.png";
@@ -9,10 +11,10 @@ const dropIn = {
 };
 
 export const FullScreenSpinner = () => {
-  return (
+  return createPortal(
     <AnimatePresence>
       <motion.div
-        className="w-screen h-screen flex justify-center items-center"
+        className="w-screen h-screen flex justify-center items-center fixed top-0 left-0 z-50 bg-white"
         variants={dropIn}
         initial="hidden"
         animate="visible"
@@ -28,6 +30,7 @@ export const FullScreenSpinner = () => {
           ></div>
         </div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
