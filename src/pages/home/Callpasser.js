@@ -42,7 +42,7 @@ const CPLSearchInput = ({ toggleOpenSearch }) => {
 };
 
 const CPLSearch = () => {
-  const [openSearch, toggleOpenSearch] = useState(false);
+  const [openSearch, toggleOpenSearch] = useState(true);
 
   return (
     <div className="flex justify-between items-center relative">
@@ -64,8 +64,10 @@ const CPLSearch = () => {
 
 const CallpasserLeft = () => {
   return (
-    <div className="w-96 h-full border-r px-10 pt-10">
-      <CPLSearch />
+    <div className="w-96 h-full border-r">
+      <div className="px-10 pt-10">
+        <CPLSearch />
+      </div>
     </div>
   );
 };
