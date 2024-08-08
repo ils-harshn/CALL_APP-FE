@@ -1,13 +1,12 @@
 import Main from "../layouts/main";
 import { CheckLogin } from "../layouts/protectors";
+import Callpasser from "./Callpasser";
 
 const Home = () => {
   return (
     <CheckLogin>
       <Main docmeta={{ title: "Dashboard - SpeakEasy" }}>
-        <div className="flex-grow">
-          <h2>Wow</h2>
-        </div>
+        <Callpasser />
       </Main>
     </CheckLogin>
   );
