@@ -42,7 +42,7 @@ const CPLSearchInput = ({ toggleOpenSearch }) => {
 };
 
 const CPLSearch = () => {
-  const [openSearch, toggleOpenSearch] = useState(true);
+  const [openSearch, toggleOpenSearch] = useState(false);
 
   return (
     <div className="flex justify-between items-center relative">
@@ -50,7 +50,7 @@ const CPLSearch = () => {
         {openSearch && <CPLSearchInput toggleOpenSearch={toggleOpenSearch} />}
       </AnimatePresence>
       <div>
-        <h4 className="text-2xl font-bold text-slate-700">Chat</h4>
+        <h4 className="text-2xl font-bold text-slate-700">SpeakEasy</h4>
         <p className="text-slate-700">Start New Conversation</p>
       </div>
       <div>
