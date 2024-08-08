@@ -39,7 +39,10 @@ const FullScreenToggleButton = () => {
   };
 
   return (
-    <IconButton onClick={toggleFullScreen}>
+    <IconButton
+      onClick={toggleFullScreen}
+      title={isFullScreen ? "Minimize screen" : "Maximize screen"}
+    >
       {isFullScreen ? <LuMinimize /> : <LuMaximize />}
     </IconButton>
   );
