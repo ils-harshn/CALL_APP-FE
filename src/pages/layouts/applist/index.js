@@ -16,7 +16,7 @@ const SideMenubutton = ({ children, className = "" }) => {
 
 const AppList = () => {
   return (
-    <div className="right-sidebar w-24 border-l flex flex-col justify-between">
+    <div className="right-sidebar w-24 border-l flex flex-col justify-between hover:border-l-black duration-300">
       <ul className="">
         <SideMenubutton>
           <IconButtonSecondary className="text-2xl" title="Apps">
@@ -62,7 +62,7 @@ const AppList = () => {
       </ul>
 
       <ul className="">
-        <SideMenubutton className="pb-7">
+        <SideMenubutton>
           <IconButtonSecondary
             className="text-lg bg-purple-100 text-purple-500 hover:bg-purple-200 duration-300"
             title="About Us"
