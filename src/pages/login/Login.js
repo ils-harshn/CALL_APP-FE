@@ -11,12 +11,15 @@ import { useLoginMutation } from "../../apis/auth/queryHooks";
 import apierrorhandler from "../../utils/apierrorhandler";
 import formikApiErrorHandler from "../../formik/errorhandlers/formikApiErrorHandler";
 import notify from "../../utils/notify";
+import { useNavigate } from "react-router-dom";
 
 const Form = () => {
+  const navigate = useNavigate();
   const { mutate, isLoading } = useLoginMutation({
     onSuccess: (values) => {
       localStorage.setItem("token", values.token);
       notify.info("Logged in successfully!");
+      navigate(ROUTES.INDEX);
     },
     onError: (error) => {
       apierrorhandler(error, {

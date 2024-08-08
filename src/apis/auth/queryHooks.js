@@ -7,11 +7,7 @@ import {
   resendVerifyEmailOTP,
   verifyEmail,
 } from "./queryFunction";
-
-const commonConfig = {
-  retry: false,
-  refetchOnWindowFocus: false,
-};
+import commonConfig from "../commonConfig";
 
 export const useRegisterMutation = (config = {}) =>
   useMutation({

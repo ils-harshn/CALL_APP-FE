@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import BaseQueryProvider from "./apis/provider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
