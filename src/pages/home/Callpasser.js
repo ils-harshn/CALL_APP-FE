@@ -42,7 +42,7 @@ const CPLSearchInput = ({ toggleOpenSearch }) => {
 };
 
 const CPLSearch = () => {
-  const [openSearch, toggleOpenSearch] = useState(true);
+  const [openSearch, toggleOpenSearch] = useState(false);
 
   return (
     <div className="flex justify-between items-center relative">

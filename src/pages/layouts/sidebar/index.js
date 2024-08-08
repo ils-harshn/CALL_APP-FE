@@ -10,6 +10,40 @@ import { RiShutDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import ROUTES from "../../../routes";
 import notify from "../../../utils/notify";
+import { LuMaximize, LuMinimize } from "react-icons/lu";
+import { useEffect, useState } from "react";
+
+const FullScreenToggleButton = () => {
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      setIsFullScreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullScreenChange);
+    };
+  }, []);
+
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  return (
+    <IconButton onClick={toggleFullScreen}>
+      {isFullScreen ? <LuMinimize /> : <LuMaximize />}
+    </IconButton>
+  );
+};
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -86,6 +120,10 @@ const SideBar = ({ className = "" }) => {
           <IconButton>
             <IoIosSettings />
           </IconButton>
+        </SideMenubutton>
+
+        <SideMenubutton>
+          <FullScreenToggleButton />
         </SideMenubutton>
 
         <SideMenubutton>
