@@ -4,6 +4,7 @@ import { IoClose } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FirstTabsOptions, SecondTabsOptions } from "./TabsOptions";
+import Tab from "./Tab";
 
 const CPLSearchInput = ({ toggleOpenSearch }) => {
   const inputRef = useRef();
@@ -71,6 +72,7 @@ const CallpasserLeft = () => {
         <FirstTabsOptions />
         <SecondTabsOptions />
       </div>
+      <Tab />
     </div>
   );
 };

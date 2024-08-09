@@ -94,8 +94,8 @@ export const BadgeButton = ({
   return (
     <button
       className={`${className} ${
-        isActive ? "bg-blue-400 text-white" : "bg-slate-100 text-slate-700"
-      } font-semibold px-6 py-2  rounded-xl  hover:text-white duration-300 hover:bg-blue-400`}
+        isActive ? "bg-blue-100 text-blue-600" : "bg-slate-100 text-slate-700"
+      } font-semibold px-6 py-2  rounded-xl  hover:text-blue-600 duration-300 hover:bg-blue-100`}
       {...props}
     >
       {children}
