@@ -29,7 +29,7 @@ const CPLSearchInput = ({ toggleOpenSearch }) => {
         <input
           ref={inputRef}
           className="h-full w-full focus:outline-none"
-          placeholder="Search by username"
+          placeholder="Search..."
         />
       </div>
       <div className="h-full flex justify-center items-center text-xl">
