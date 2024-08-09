@@ -3,6 +3,7 @@ import { IconButton } from "../../components/Buttons";
 import { IoClose } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { FirstTabsOptions, SecondTabsOptions } from "./TabsOptions";
 
 const CPLSearchInput = ({ toggleOpenSearch }) => {
   const inputRef = useRef();
@@ -67,6 +68,8 @@ const CallpasserLeft = () => {
     <div className="w-96 h-full border-r">
       <div className="px-10 pt-10">
         <CPLSearch />
+        <FirstTabsOptions />
+        <SecondTabsOptions />
       </div>
     </div>
   );

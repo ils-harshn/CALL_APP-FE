@@ -62,3 +62,43 @@ export const IconButtonSecondary = ({
     </>
   );
 };
+
+export const BadgeIconButton = ({
+  title,
+  children,
+  isActive = false,
+  className = "",
+  ...props
+}) => {
+  return (
+    <button
+      className={`${className} ${
+        isActive ? "bg-blue-400 text-white" : ""
+      } px-4 py-1 bg-slate-100 rounded-2xl text-slate-700 hover:text-white duration-300 hover:bg-blue-400`}
+      {...props}
+    >
+      <div className="flex items-center text-sm">
+        <div className="mr-2">{children}</div>
+        <div className="font-semibold">{title}</div>
+      </div>
+    </button>
+  );
+};
+
+export const BadgeButton = ({
+  children,
+  isActive = false,
+  className = "",
+  ...props
+}) => {
+  return (
+    <button
+      className={`${className} ${
+        isActive ? "bg-blue-400 text-white" : ""
+      } font-semibold px-6 py-2 bg-slate-100 rounded-xl text-slate-700 hover:text-white duration-300 hover:bg-blue-400`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
