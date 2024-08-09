@@ -15,6 +15,7 @@ export const authApi = (config) => {
     baseURL: BASE_URL,
     headers: {
       "Content-Type": "application/json",
+      ...config?.headers,
     },
   };
 
