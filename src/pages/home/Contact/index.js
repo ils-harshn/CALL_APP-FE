@@ -1,5 +1,6 @@
 import { IoCall } from "react-icons/io5";
 import data from "../Contact/data";
+import { useState } from "react";
 
 const ContactTabBox = ({ data, setActive, isActive = false }) => {
   return (
@@ -31,10 +32,17 @@ const ContactTabBox = ({ data, setActive, isActive = false }) => {
   );
 };
 const Contact = () => {
+  const [active, setActive] = useState(null);
+
   return (
     <div className="mt-4 h-[calc(100vh-180px)] overflow-y-auto">
       {data.map((contact) => (
-        <ContactTabBox data={contact} />
+        <ContactTabBox
+          key={contact.id}
+          data={contact}
+          isActive={active === contact.id}
+          setActive={() => setActive(contact.id)}
+        />
       ))}
     </div>
   );
