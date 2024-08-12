@@ -5,7 +5,7 @@ import data from "./data";
 const All = () => {
   const [active, setActive] = useState(null);
   return (
-    <div className="mt-4">
+    <div className="mt-4 h-[calc(100vh-244px)] overflow-y-auto">
       {data.map((call) => (
         <CallTabBox
           key={call.id}
