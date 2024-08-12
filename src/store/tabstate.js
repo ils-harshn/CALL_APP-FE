@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 const useTabState = create((set) => ({
-  firstTab: 2,
+  firstTab: 0,
   changeFirstTab: (newValue) => set({ firstTab: newValue }),
 
   secondTab0: 0,
