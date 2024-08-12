@@ -1,9 +1,10 @@
-import { useState } from "react";
 import CallTabBox from "./CallTabBox";
 import data, { CALL_STATUS } from "./data";
+import useTabState from "../../../store/tabstate";
 
 const Missed = () => {
-  const [active, setActive] = useState(null);
+  const active = useTabState((state) => state.cMisSelection);
+  const setActive = useTabState((state) => state.changeCMisSelection);
   return (
     <div className="mt-4 h-[calc(100vh-244px)] overflow-y-auto">
       {data

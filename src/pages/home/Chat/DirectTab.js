@@ -1,4 +1,4 @@
-import { useState } from "react";
+import useTabState from "../../../store/tabstate";
 
 const message_status = {
   SEEN: 0,
@@ -177,7 +177,8 @@ const DirectTab = () => {
     },
   ];
 
-  const [active, setActive] = useState(null);
+  const active = useTabState((state) => state.dTSelection);
+  const setActive = useTabState((state) => state.changeDTSelection);
 
   return (
     <div className="mt-4 h-[calc(100vh-244px)] overflow-y-auto">

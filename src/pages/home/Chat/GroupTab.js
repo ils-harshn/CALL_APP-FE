@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { LuSearch } from "react-icons/lu";
+import useTabState from "../../../store/tabstate";
 
 const Search = ({
   placeholder = "Search group by name...",
@@ -50,7 +51,8 @@ const Group = ({ data, setActive, isActive = false }) => {
 
 const GroupTab = () => {
   const [search, setSearch] = useState("");
-  const [active, setActive] = useState(null);
+  const active = useTabState((state) => state.gtSelection);
+  const setActive = useTabState((state) => state.changeGtSelection);
 
   const data = [
     {
