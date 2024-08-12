@@ -39,7 +39,7 @@ const data = [
   },
   {
     id: 5,
-    name: "Jony Justin",
+    name: "Monu",
     last_call: {
       status: CALL_STATUS.INCOMING,
       date_time: "3:30pm",
@@ -47,7 +47,7 @@ const data = [
   },
   {
     id: 6,
-    name: "Martin Magni",
+    name: "Astrio",
     last_call: {
       status: CALL_STATUS.OUTGOING,
       date_time: "3:30pm",
@@ -55,7 +55,7 @@ const data = [
   },
   {
     id: 7,
-    name: "Josph Josh",
+    name: "Jacob",
     last_call: {
       status: CALL_STATUS.MISSED,
       date_time: "3:30pm",
@@ -63,10 +63,51 @@ const data = [
   },
   {
     id: 8,
-    name: "Ali",
+    name: "Nile Gosh",
     last_call: {
       status: CALL_STATUS.OUTGOING,
       date_time: "3:30pm",
+    },
+  },
+
+  {
+    id: 9,
+    name: "Dev",
+    last_call: {
+      status: CALL_STATUS.MISSED,
+      date_time: "3:30pm",
+    },
+  },
+  {
+    id: 10,
+    name: "Pandit",
+    last_call: {
+      status: CALL_STATUS.INCOMING,
+      date_time: "3:30pm",
+    },
+  },
+  {
+    id: 11,
+    name: "Moron",
+    last_call: {
+      status: CALL_STATUS.MISSED,
+      date_time: "3:30pm",
+    },
+  },
+  {
+    id: 12,
+    name: "XE Musk",
+    last_call: {
+      status: CALL_STATUS.INCOMING,
+      date_time: "Thusday 3:30pm",
+    },
+  },
+  {
+    id: 13,
+    name: "Putin",
+    last_call: {
+      status: CALL_STATUS.INCOMING,
+      date_time: "21-12-2023 3:30pm",
     },
   },
 ];
