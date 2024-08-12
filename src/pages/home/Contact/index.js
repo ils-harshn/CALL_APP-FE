@@ -43,8 +43,8 @@ const Contact = () => {
         <ContactTabBox
           key={contact.id}
           data={contact}
-          isActive={active === contact.id}
-          setActive={() => setActive(contact.id)}
+          isActive={active?.id === contact.id}
+          setActive={() => setActive(contact)}
         />
       ))}
     </div>

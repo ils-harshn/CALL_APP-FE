@@ -113,8 +113,8 @@ const GroupTab = () => {
           <Group
             key={group.id}
             data={group}
-            isActive={active === group.id}
-            setActive={() => setActive(group.id)}
+            isActive={active?.id === group.id}
+            setActive={() => setActive(group)}
           />
         ))}
       </div>

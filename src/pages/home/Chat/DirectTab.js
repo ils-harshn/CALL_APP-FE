@@ -186,8 +186,8 @@ const DirectTab = () => {
         <Member
           key={member.id}
           data={member}
-          isActive={active === member.id}
-          setActive={() => setActive(member.id)}
+          isActive={active?.id === member.id}
+          setActive={() => setActive(member)}
         />
       ))}
     </div>

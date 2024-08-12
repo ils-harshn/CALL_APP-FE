@@ -11,8 +11,8 @@ const All = () => {
         <CallTabBox
           key={call.id}
           data={call}
-          isActive={active === call.id}
-          setActive={() => setActive(call.id)}
+          isActive={active?.id === call.id}
+          setActive={() => setActive(call)}
         />
       ))}
     </div>
