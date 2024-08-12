@@ -5,6 +5,7 @@ import Outgoing from "./Call/Outgoing";
 import Missed from "./Call/Missed";
 import DirectTab from "./Chat/DirectTab";
 import GroupTab from "./Chat/GroupTab";
+import Contact from "./Contact";
 
 const HandleChatTab = () => {
   const secondTab0 = useTabState((state) => state.secondTab0);
@@ -51,6 +52,9 @@ const Tab = () => {
     case 1:
       // CALL TAB
       return <HandleCallTab />;
+    case 2:
+      // CONTACT TAB
+      return <Contact />;
     default:
       return null;
   }
