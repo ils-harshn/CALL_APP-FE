@@ -1,11 +1,8 @@
 import { IoCall } from "react-icons/io5";
 import data from "../Contact/data";
-import { BsChatLeftFill } from "react-icons/bs";
 import useTabState from "../../../store/tabstate";
 
 const ContactTabBox = ({ data, setActive, isActive = false }) => {
-  const openChat = () => {};
-
   return (
     <div
       className={`px-10 py-4 flex cursor-pointer border-l hover:bg-blue-50 ${
@@ -31,12 +28,6 @@ const ContactTabBox = ({ data, setActive, isActive = false }) => {
       <div className="flex items-center">
         <div className="bg-green-100 text-green-400 p-2 rounded-full duration-300 hover:bg-green-200 hover:text-green-500">
           <IoCall />
-        </div>
-        <div
-          onClick={openChat}
-          className="ml-3 bg-yellow-100 text-yellow-400 p-2 rounded-full duration-300 hover:bg-yellow-200 hover:text-yellow-500"
-        >
-          <BsChatLeftFill />
         </div>
       </div>
     </div>
