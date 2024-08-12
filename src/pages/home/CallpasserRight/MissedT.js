@@ -1,8 +1,13 @@
 import useTabState from "../../../store/tabstate";
+import NoSelectionT from "./NoSelectionT";
 
 const MissedT = () => {
   const selection = useTabState((state) => state.cMisSelection);
-  return <code>{selection ? JSON.stringify(selection) : ""}</code>;
+  return selection ? (
+    <code>{JSON.stringify(selection)}</code>
+  ) : (
+    <NoSelectionT />
+  );
 };
 
 export default MissedT;

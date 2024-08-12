@@ -1,5 +1,4 @@
 import useTabState from "../../../store/tabstate";
-import data from "../Call/data";
 import AllT from "./AllT";
 import ContactT from "./ContactT";
 import DirectT from "./DirectT";

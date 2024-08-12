@@ -1,8 +1,13 @@
 import useTabState from "../../../store/tabstate";
+import NoSelectionT from "./NoSelectionT";
 
 const IncomingT = () => {
   const selection = useTabState((state) => state.cIncSelection);
-  return <code>{selection ? JSON.stringify(selection) : ""}</code>;
+  return selection ? (
+    <code>{JSON.stringify(selection)}</code>
+  ) : (
+    <NoSelectionT />
+  );
 };
 
 export default IncomingT;

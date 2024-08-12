@@ -1,8 +1,13 @@
 import useTabState from "../../../store/tabstate";
+import NoSelectionT from "./NoSelectionT";
 
 const ContactT = () => {
   const selection = useTabState((state) => state.conTactselection);
-  return <code>{selection ? JSON.stringify(selection) : ""}</code>;
+  return selection ? (
+    <code>{JSON.stringify(selection)}</code>
+  ) : (
+    <NoSelectionT />
+  );
 };
 
 export default ContactT;
