@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FirstTabsOptions, SecondTabsOptions } from "./TabsOptions";
 import Tab from "./Tab";
+import CallpasserRight from "./CallpasserRight";
 
 const CPLSearchInput = ({ toggleOpenSearch }) => {
   const inputRef = useRef();
@@ -79,9 +80,10 @@ const CallpasserLeft = () => {
 
 const Callpasser = () => {
   return (
-    <div className="flex-grow">
+    <>
       <CallpasserLeft />
-    </div>
+      <CallpasserRight />
+    </>
   );
 };
 
