@@ -1,10 +1,11 @@
 import useTabState from "../../store/tabstate";
 import DirectTab from "./DirectTab";
+import GroupTab from "./GroupTab";
 
 const HandleChatTab = () => {
   const secondTab0 = useTabState((state) => state.secondTab0);
   if (secondTab0 === 0) return <DirectTab />;
-  return null;
+  return <GroupTab />;
 };
 
 const HandleCallTab = () => {
