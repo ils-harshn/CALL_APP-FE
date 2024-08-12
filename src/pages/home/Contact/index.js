@@ -1,6 +1,7 @@
 import { IoCall } from "react-icons/io5";
 import data from "../Contact/data";
 import { useState } from "react";
+import { BsChatLeftFill } from "react-icons/bs";
 
 const ContactTabBox = ({ data, setActive, isActive = false }) => {
   return (
@@ -26,6 +27,9 @@ const ContactTabBox = ({ data, setActive, isActive = false }) => {
       <div className="flex items-center">
         <div className="bg-green-100 text-green-400 p-2 rounded-full duration-300 hover:bg-green-200 hover:text-green-500">
           <IoCall />
+        </div>
+        <div className="ml-3 bg-yellow-100 text-yellow-400 p-2 rounded-full duration-300 hover:bg-yellow-200 hover:text-yellow-500">
+          <BsChatLeftFill />
         </div>
       </div>
     </div>
