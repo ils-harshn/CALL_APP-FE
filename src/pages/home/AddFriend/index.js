@@ -1,8 +1,28 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { IoAddOutline, IoClose, IoSearch } from "react-icons/io5";
-import { IconButtonSecondary } from "../../../components/Buttons";
+import { IconButton, IconButtonSecondary } from "../../../components/Buttons";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
-import { dtdata, Member } from "../Chat/DirectTab";
+import { dtdata } from "../Chat/DirectTab";
+
+const Member = ({ data }) => {
+  return (
+    <div className="px-10 py-4 flex cursor-pointer border-l hover:bg-blue-50">
+      <div className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl">
+        {data.name[0].toUpperCase()}
+      </div>
+      <div className="ml-4 flex-grow min-w-0 items-center py-2">
+        <h4 className="font-semibold w-full text-ellipsis overflow-hidden whitespace-nowrap">
+          {data.name}
+        </h4>
+      </div>
+      <div>
+        <IconButton>
+          <IoAddOutline />
+        </IconButton>
+      </div>
+    </div>
+  );
+};
 
 const List = () => {
   return (

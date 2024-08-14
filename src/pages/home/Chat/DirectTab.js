@@ -129,7 +129,7 @@ export const dtdata = [
   },
 ];
 
-export const Member = ({ data, setActive, isActive = false }) => {
+const Member = ({ data, setActive, isActive = false }) => {
   return (
     <div
       onClick={setActive}
