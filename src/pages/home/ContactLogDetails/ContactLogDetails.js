@@ -275,7 +275,7 @@ const ContactLogDetails = ({ data }) => {
       transition={{ type: "spring", stiffness: 100, damping: 20 }} // Customize the animation
       className="flex p-10"
     >
-      <div className="w-80">
+      <div className="min-w-80 w-[40%]">
         <ContactCard data={data} />
         <SharedFileCard />
       </div>
