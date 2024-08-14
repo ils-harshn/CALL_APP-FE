@@ -17,6 +17,7 @@ const dropIn = {
 const StatusBar = ({ data }) => {
   return (
     <motion.div
+      key={data.id}
       className="bg-white flex items-center h-20 px-8 py-4 border-b m-4 rounded-full shadow-sm"
       initial="hidden"
       animate="visible"
@@ -32,7 +33,7 @@ const StatusBar = ({ data }) => {
       </div>
 
       <div className="ml-2 w-36">
-        <p className="truncate">{data.name}</p>
+        <p className="truncate font-semibold">{data.name}</p>
       </div>
 
       <div className="mx-4 h-[60%] border-r"></div>

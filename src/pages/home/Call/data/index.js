@@ -12,6 +12,7 @@ const data = [
       status: CALL_STATUS.INCOMING,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 2,
@@ -20,6 +21,7 @@ const data = [
       status: CALL_STATUS.OUTGOING,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ const data = [
       status: CALL_STATUS.MISSED,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 4,
@@ -36,6 +39,7 @@ const data = [
       status: CALL_STATUS.OUTGOING,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 5,
@@ -44,6 +48,7 @@ const data = [
       status: CALL_STATUS.INCOMING,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 6,
@@ -52,6 +57,7 @@ const data = [
       status: CALL_STATUS.OUTGOING,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 7,
@@ -60,6 +66,7 @@ const data = [
       status: CALL_STATUS.MISSED,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 8,
@@ -68,6 +75,7 @@ const data = [
       status: CALL_STATUS.OUTGOING,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
 
   {
@@ -77,6 +85,7 @@ const data = [
       status: CALL_STATUS.MISSED,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 10,
@@ -85,6 +94,7 @@ const data = [
       status: CALL_STATUS.INCOMING,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 11,
@@ -93,6 +103,7 @@ const data = [
       status: CALL_STATUS.MISSED,
       date_time: "3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 12,
@@ -101,6 +112,7 @@ const data = [
       status: CALL_STATUS.INCOMING,
       date_time: "Thusday 3:30pm",
     },
+    phone: "+21 3523 25544",
   },
   {
     id: 13,
@@ -109,6 +121,7 @@ const data = [
       status: CALL_STATUS.INCOMING,
       date_time: "21-12-2023 3:30pm",
     },
+    phone: "+21 3523 25544",
   },
 ];
 
