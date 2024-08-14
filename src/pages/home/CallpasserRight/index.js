@@ -62,7 +62,7 @@ const Tab = () => {
 
 const CallpasserRight = () => {
   return (
-    <div className="w-[calc(100vw-36rem)] h-screen">
+    <div className="w-[calc(100vw-36rem)] h-screen bg-blue-50">
       <Tab />
     </div>
   );

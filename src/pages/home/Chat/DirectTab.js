@@ -1,13 +1,13 @@
 import useTabState from "../../../store/tabstate";
 
-const message_status = {
+export const message_status = {
   SEEN: 0,
   SENT: 1,
   SENDING: 2,
   FAILED: 3,
 };
 
-const message_status_map = {
+export const message_status_map = {
   [message_status.SEEN]: {
     color: "text-green-500",
     text: "Seen",
@@ -26,13 +26,13 @@ const message_status_map = {
   },
 };
 
-const status = {
+export const status = {
   OFFLINE: 0,
   ONLINE: 1,
   DND: 2,
 };
 
-const status_color = {
+export const status_color = {
   [status.OFFLINE]: "bg-slate-500",
   [status.ONLINE]: "bg-green-500",
   [status.DND]: "bg-yellow-500",

@@ -24,6 +24,9 @@ export const FullScreenSpinner = () => {
           <div className="flex flex-col items-center mb-4">
             <img alt="Logo" src={Logo} />
             <h1 className="text-2xl text-slate-600">SpeakEasy</h1>
+            <p className="text-sm">
+              Simple, secure messaging for fast connect to world..!
+            </p>
           </div>
           <div
             className={`${styles.spinner} w-6 h-6 border-4 rounded-full border-t-blue-300`}
