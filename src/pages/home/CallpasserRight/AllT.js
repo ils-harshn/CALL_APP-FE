@@ -1,12 +1,12 @@
 import useTabState from "../../../store/tabstate";
-import ContactDetails from "../ContactDetails/ContactDetails";
+import ContactLogDetails from "../ContactLogDetails/ContactLogDetails";
 import NoSelectionT from "./NoSelectionT";
 
 const AllT = () => {
   const selection = useTabState((state) => state.cAllSelection);
 
   if (selection) {
-    return <ContactDetails data={selection} />;
+    return <ContactLogDetails data={selection} />;
   } else return <NoSelectionT />;
 };
 

@@ -1,16 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { IconButtonSecondary } from "../../../components/Buttons";
 import { BsChatLeftFill } from "react-icons/bs";
 import { IoCall, IoInformationOutline } from "react-icons/io5";
-import { IoIosArrowDown } from "react-icons/io";
-import { CiFileOn } from "react-icons/ci";
 import { motion } from "framer-motion";
-import { CALL_STATUS } from "../Call/data";
-import {
-  FiPhoneIncoming,
-  FiPhoneMissed,
-  FiPhoneOutgoing,
-} from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
 const ContactCard = ({ data }) => {
@@ -58,196 +50,50 @@ const ContactCard = ({ data }) => {
   );
 };
 
-const SharedFilesList = () => {
-  const files = [
-    { id: 1, filename: "mountainDeo.pdf" },
-    { id: 2, filename: "hello.txt" },
-    { id: 3, filename: "modern warfare III.exe" },
-    { id: 4, filename: "windows 12.iso" },
-    { id: 5, filename: "ios.exe" },
+const Details = ({ data }) => {
+  const details = [
+    {
+      label: "Name",
+      value: data.name,
+    },
+    {
+      label: "Gender",
+      value: "male",
+    },
+    {
+      label: "Birthday",
+      value: "18 April 2002",
+    },
+    {
+      label: "City",
+      value: "Indore",
+    },
+    {
+      label: "Mobile No",
+      value: data.phone,
+    },
+    {
+      label: "email",
+      value: "example@gmail.com",
+    },
   ];
 
   return (
-    <ul className="mt-1 cursor-pointer">
-      {files.map((file) => (
-        <li className="flex items-center text-blue-400" key={file.id}>
-          <div className="mr-2">
-            <CiFileOn />
-          </div>
-          <div className="flex-grow text-ellipsis overflow-hidden whitespace-nowrap">
-            {file.filename}
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-};
+    <div className="bg-white w-full p-8 rounded-2xl">
+      <div className="text-lg font-semibold pb-2 mb-2 border-b-2">
+        Contact Info
+      </div>
 
-const SharedFileCard = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleOpen = () => {
-    setIsOpen(!isOpen);
-  };
-
-  return (
-    <div className="bg-white w-full px-6 py-6 rounded-2xl mt-4">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center">
-          <div className="font-semibold">Shared Document</div>
-          <div className="bg-green-400 ml-1 p-1 rounded-md text-white font-bold text-xs">
-            3
-          </div>
-        </div>
-        <IconButtonSecondary
-          onClick={toggleOpen}
-          className="cursor-pointer bg-blue-100 text-blue-500 hover:bg-blue-200"
+      {details.map((item, index) => (
+        <div
+          className={`flex justify-between pt-3 text-sm ${
+            index === details.length - 1 ? "" : "border-b pb-3"
+          }`}
         >
-          <IoIosArrowDown
-            className={`transform ${isOpen ? "rotate-180" : "rotate-0"}`}
-          />
-        </IconButtonSecondary>
-      </div>
-      <motion.div
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-        className="overflow-hidden"
-      >
-        <SharedFilesList />
-      </motion.div>
-    </div>
-  );
-};
-
-const Log = ({ data }) => {
-  return (
-    <li
-      className={`flex items-center justify-between bg-white mb-4 px-4 py-4 rounded-xl cursor-pointer font-semibold hover:bg-slate-50 duration-300 ${
-        data.status === CALL_STATUS.INCOMING
-          ? "text-green-500"
-          : data.status === CALL_STATUS.OUTGOING
-          ? "text-yellow-500"
-          : data.status === CALL_STATUS.MISSED
-          ? "text-red-500"
-          : ""
-      }`}
-    >
-      <div className="flex items-center">
-        {data.status === CALL_STATUS.INCOMING ? (
-          <>
-            <div className="mr-4">
-              <FiPhoneIncoming />
-            </div>
-            <div>Incoming Call</div>
-          </>
-        ) : data.status === CALL_STATUS.OUTGOING ? (
-          <>
-            <div className="mr-4">
-              <FiPhoneOutgoing />
-            </div>
-            <div>Outgoing Call</div>
-          </>
-        ) : data.status === CALL_STATUS.MISSED ? (
-          <>
-            <div className="mr-4">
-              <FiPhoneMissed />
-            </div>
-            <div>Missed Call</div>
-          </>
-        ) : null}
-      </div>
-      <div className="text-xs">{data.time}</div>
-    </li>
-  );
-};
-
-const CallLogs = () => {
-  const logs = [
-    {
-      id: 1,
-      status: CALL_STATUS.INCOMING,
-      time: "15 minutes ago",
-    },
-    {
-      id: 2,
-      status: CALL_STATUS.MISSED,
-      time: "23 minutes ago",
-    },
-    {
-      id: 3,
-      status: CALL_STATUS.OUTGOING,
-      time: "23 minutes ago",
-    },
-    {
-      id: 4,
-      status: CALL_STATUS.OUTGOING,
-      time: "Yesterday 05:10 PM",
-    },
-    {
-      id: 5,
-      status: CALL_STATUS.INCOMING,
-      time: "24-12-2023 01:10 AM",
-    },
-    {
-      id: 6,
-      status: CALL_STATUS.MISSED,
-      time: "24-12-2023 01:10 AM",
-    },
-    {
-      id: 7,
-      status: CALL_STATUS.MISSED,
-      time: "24-12-2023 01:10 AM",
-    },
-    {
-      id: 8,
-      status: CALL_STATUS.INCOMING,
-      time: "24-12-2023 01:10 AM",
-    },
-    {
-      id: 9,
-      status: CALL_STATUS.OUTGOING,
-      time: "24-12-2023 01:10 AM",
-    },
-    {
-      id: 10,
-      status: CALL_STATUS.MISSED,
-      time: "24-12-2023 01:10 AM",
-    },
-    {
-      id: 11,
-      status: CALL_STATUS.INCOMING,
-      time: "24-12-2023 01:10 AM",
-    },
-    {
-      id: 12,
-      status: CALL_STATUS.OUTGOING,
-      time: "24-12-2023 01:10 AM",
-    },
-    {
-      id: 13,
-      status: CALL_STATUS.INCOMING,
-      time: "24-12-2023 01:10 AM",
-    },
-    {
-      id: 14,
-      status: CALL_STATUS.MISSED,
-      time: "24-12-2023 01:10 AM",
-    },
-    {
-      id: 15,
-      status: CALL_STATUS.INCOMING,
-      time: "24-12-2023 01:10 AM",
-    },
-  ];
-
-  return (
-    <div className="w-full px-4 rounded-2xl h-96 overflow-y-auto">
-      <ul>
-        {logs.map((log) => (
-          <Log key={log.id} data={log} />
-        ))}
-      </ul>
+          <div className="text-slate-500 font-semibold">{item.label}</div>
+          <div className="text-slate-500">{item.value}</div>
+        </div>
+      ))}
     </div>
   );
 };
@@ -260,7 +106,7 @@ const Delete = ({ className = "", ...props }) => {
     >
       <div className="flex flex-col items-center">
         <MdDelete className="text-2xl mb-1" />
-        <div>Delete Call Log</div>
+        <div>Delete Contact</div>
       </div>
     </div>
   );
@@ -277,13 +123,10 @@ const ContactDetails = ({ data }) => {
     >
       <div className="w-80">
         <ContactCard data={data} />
-        <SharedFileCard />
+        <Delete />
       </div>
       <div className="flex-grow ml-4">
-        <CallLogs />
-        <div className="px-4">
-          <Delete />
-        </div>
+        <Details data={data} />
       </div>
     </motion.div>
   );
