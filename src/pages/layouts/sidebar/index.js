@@ -12,6 +12,7 @@ import ROUTES from "../../../routes";
 import notify from "../../../utils/notify";
 import { LuMaximize, LuMinimize } from "react-icons/lu";
 import { useEffect, useState } from "react";
+import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
 
 const FullScreenToggleButton = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -81,6 +82,22 @@ const SideMenubutton = ({ children, className = "" }) => {
   );
 };
 
+const AddFriendButton = () => {
+  const isOpen = useSubTabState((state) => state.tab);
+  const changeTab = useSubTabState((state) => state.changeTab);
+
+  const toggleTab = () =>
+    changeTab(SUB_TABS.ADD_FRIEND === isOpen ? null : SUB_TABS.ADD_FRIEND);
+
+  return (
+    <SideMenubutton>
+      <IconButton onClick={toggleTab} isActive={SUB_TABS.ADD_FRIEND === isOpen}>
+        <BsPeopleFill />
+      </IconButton>
+    </SideMenubutton>
+  );
+};
+
 const SideBar = ({ className = "" }) => {
   return (
     <div
@@ -107,11 +124,7 @@ const SideBar = ({ className = "" }) => {
           </IconButton>
         </SideMenubutton>
 
-        <SideMenubutton>
-          <IconButton>
-            <BsPeopleFill />
-          </IconButton>
-        </SideMenubutton>
+        <AddFriendButton />
 
         <SideMenubutton>
           <IconButton>

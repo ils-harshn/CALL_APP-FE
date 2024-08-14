@@ -27,10 +27,17 @@ export const AuthButton = ({ children, className = "", ...props }) => {
   );
 };
 
-export const IconButton = ({ children, className = "", ...props }) => {
+export const IconButton = ({
+  children,
+  className = "",
+  isActive = false,
+  ...props
+}) => {
   return (
     <button
-      className={`${className} bg-slate-100 w-10 h-10 rounded-full border flex justify-center items-center text-black hover:text-white duration-300 hover:bg-blue-400`}
+      className={`${className} ${
+        isActive ? "text-white bg-blue-400" : "bg-slate-100 text-black"
+      } w-10 h-10 rounded-full border flex justify-center items-center hover:text-white duration-300 hover:bg-blue-400`}
       {...props}
     >
       {" "}
