@@ -6,7 +6,7 @@ const All = () => {
   const active = useTabState((state) => state.cAllSelection);
   const setActive = useTabState((state) => state.changeCAllSelection);
   return (
-    <div className="mt-4 h-[calc(100vh-244px)] overflow-y-auto">
+    <div className="mt-4 h-[calc(100vh-244px)] overflow-y-auto pb-16">
       {data.map((call) => (
         <CallTabBox
           key={call.id}

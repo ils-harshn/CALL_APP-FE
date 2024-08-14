@@ -181,7 +181,7 @@ const DirectTab = () => {
   const setActive = useTabState((state) => state.changeDTSelection);
 
   return (
-    <div className="mt-4 h-[calc(100vh-244px)] overflow-y-auto">
+    <div className="mt-4 pb-16 h-[calc(100vh-244px)] overflow-y-auto">
       {data.map((member) => (
         <Member
           key={member.id}

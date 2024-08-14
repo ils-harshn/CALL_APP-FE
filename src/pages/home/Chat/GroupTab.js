@@ -108,7 +108,7 @@ const GroupTab = () => {
   return (
     <div className="my-4">
       <Search value={search} onChange={(e) => setSearch(e.target.value)} />
-      <div className="overflow-y-auto h-[calc(100vh-324px)]">
+      <div className="overflow-y-auto h-[calc(100vh-324px)] pb-16">
         {data.map((group) => (
           <Group
             key={group.id}

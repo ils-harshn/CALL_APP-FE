@@ -1,11 +1,12 @@
 import { LuSearch } from "react-icons/lu";
-import { IconButton } from "../../components/Buttons";
-import { IoClose } from "react-icons/io5";
+import { IconButton, IconButtonSecondary } from "../../components/Buttons";
+import { IoAddOutline, IoClose, IoSearch } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FirstTabsOptions, SecondTabsOptions } from "./TabsOptions";
 import Tab from "./Tab";
 import CallpasserRight from "./CallpasserRight";
+import AddFriendButton from "./AddFriend";
 
 const CPLSearchInput = ({ toggleOpenSearch }) => {
   const inputRef = useRef();
@@ -67,13 +68,14 @@ const CPLSearch = () => {
 
 const CallpasserLeft = () => {
   return (
-    <div className="w-96 h-full border-r">
+    <div className="w-96 h-full border-r relative overflow-hidden">
       <div className="px-10 pt-10">
         <CPLSearch />
         <FirstTabsOptions />
         <SecondTabsOptions />
       </div>
       <Tab />
+      <AddFriendButton />
     </div>
   );
 };

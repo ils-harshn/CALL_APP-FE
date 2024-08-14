@@ -38,7 +38,7 @@ const Contact = () => {
   const setActive = useTabState((state) => state.changeConTactselection);
 
   return (
-    <div className="mt-4 h-[calc(100vh-180px)] overflow-y-auto">
+    <div className="mt-4 h-[calc(100vh-180px)] overflow-y-auto pb-16">
       {data.map((contact) => (
         <ContactTabBox
           key={contact.id}
