@@ -1,6 +1,6 @@
 import { LuSearch } from "react-icons/lu";
-import { IconButton, IconButtonSecondary } from "../../components/Buttons";
-import { IoAddOutline, IoClose, IoSearch } from "react-icons/io5";
+import { IconButton } from "../../components/Buttons";
+import { IoClose } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FirstTabsOptions, SecondTabsOptions } from "./TabsOptions";
