@@ -2,29 +2,43 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IoAddOutline, IoClose, IoSearch } from "react-icons/io5";
 import { IconButtonSecondary } from "../../../components/Buttons";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
+import { dtdata, Member } from "../Chat/DirectTab";
+
+const List = () => {
+  return (
+    <div className="mt-4 h-[calc(100vh-108px)] overflow-y-auto">
+      {dtdata.map((member) => (
+        <Member key={member.id} data={member} />
+      ))}
+    </div>
+  );
+};
 
 const SearchFriends = ({ closeTab }) => {
   return (
     <motion.div
-      className="absolute top-0 left-0 w-full h-full bg-white overflow-y-auto px-10 pt-10"
+      className="absolute top-0 left-0 w-full h-full bg-white overflow-y-auto"
       initial={{ y: "100%" }}
       animate={{ y: 0 }}
       exit={{ y: "100%" }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex items-center border-b pb-2">
-        <IoSearch />
-        <input
-          placeholder="Search by Username or Email"
-          className="flex-grow px-2 py-2 focus:outline-none"
-        ></input>
-        <IconButtonSecondary
-          onClick={closeTab}
-          className="text-lg bg-slate-400 text-white hover:bg-slate-500 duration-300"
-        >
-          <IoClose />
-        </IconButtonSecondary>
+      <div className="px-10 pt-10">
+        <div className="flex items-center border-b pb-2">
+          <IoSearch />
+          <input
+            placeholder="Search by Username or Email"
+            className="flex-grow px-2 py-2 focus:outline-none"
+          ></input>
+          <IconButtonSecondary
+            onClick={closeTab}
+            className="text-lg bg-slate-400 text-white hover:bg-slate-500 duration-300"
+          >
+            <IoClose />
+          </IconButtonSecondary>
+        </div>
       </div>
+      <List />
     </motion.div>
   );
 };

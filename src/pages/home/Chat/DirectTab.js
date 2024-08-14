@@ -38,7 +38,98 @@ export const status_color = {
   [status.DND]: "bg-yellow-500",
 };
 
-const Member = ({ data, setActive, isActive = false }) => {
+export const dtdata = [
+  {
+    id: 1,
+    name: "Anushka Rawat",
+    last_message: {
+      message:
+        "Hi, Anushka can we have a talk for a while, I need to tell you one last 3 words",
+      status: message_status.SEEN,
+      date: "09/08/24",
+    },
+    status: status.ONLINE,
+  },
+  {
+    id: 2,
+    name: "Harsh Narwariya",
+    last_message: {
+      message:
+        "Hi, Anushka can we have a talk for a while, I need to tell you one last 3 words",
+      status: message_status.SENT,
+      date: "09/08/24",
+    },
+    status: status.OFFLINE,
+  },
+  {
+    id: 3,
+    name: "Jyoti Mishra",
+    last_message: {
+      message:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+      status: message_status.SENDING,
+      date: "09/08/24",
+    },
+    status: status.DND,
+  },
+  {
+    id: 4,
+    name: "Krupal",
+    last_message: {
+      message:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+      status: message_status.SENT,
+      date: "09/08/24",
+    },
+    status: status.DND,
+  },
+  {
+    id: 5,
+    name: "Dev",
+    last_message: {
+      message:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+      status: message_status.FAILED,
+      date: "09/08/24",
+    },
+    status: status.DND,
+  },
+  {
+    id: 6,
+    name: "Dharmesh",
+    last_message: {
+      message:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+      count: 8,
+      date: "09/08/24",
+    },
+    status: status.DND,
+  },
+  {
+    id: 7,
+    name: "Nandini Malviya",
+    last_message: {
+      message:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+      count: 8,
+      date: "09/08/24",
+    },
+    status: status.ONLINE,
+  },
+  {
+    id: 8,
+    name: "Anmol",
+    last_message: {
+      message:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+      count: 8,
+      date: "09/08/24",
+    },
+    status: status.OFFLINE,
+  },
+];
+
+export const Member = ({ data, setActive, isActive = false }) => {
   return (
     <div
       onClick={setActive}
@@ -86,103 +177,12 @@ const Member = ({ data, setActive, isActive = false }) => {
 };
 
 const DirectTab = () => {
-  const data = [
-    {
-      id: 1,
-      name: "Anushka Rawat",
-      last_message: {
-        message:
-          "Hi, Anushka can we have a talk for a while, I need to tell you one last 3 words",
-        status: message_status.SEEN,
-        date: "09/08/24",
-      },
-      status: status.ONLINE,
-    },
-    {
-      id: 2,
-      name: "Harsh Narwariya",
-      last_message: {
-        message:
-          "Hi, Anushka can we have a talk for a while, I need to tell you one last 3 words",
-        status: message_status.SENT,
-        date: "09/08/24",
-      },
-      status: status.OFFLINE,
-    },
-    {
-      id: 3,
-      name: "Jyoti Mishra",
-      last_message: {
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-        status: message_status.SENDING,
-        date: "09/08/24",
-      },
-      status: status.DND,
-    },
-    {
-      id: 4,
-      name: "Krupal",
-      last_message: {
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-        status: message_status.SENT,
-        date: "09/08/24",
-      },
-      status: status.DND,
-    },
-    {
-      id: 5,
-      name: "Dev",
-      last_message: {
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-        status: message_status.FAILED,
-        date: "09/08/24",
-      },
-      status: status.DND,
-    },
-    {
-      id: 6,
-      name: "Dharmesh",
-      last_message: {
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-        count: 8,
-        date: "09/08/24",
-      },
-      status: status.DND,
-    },
-    {
-      id: 7,
-      name: "Nandini Malviya",
-      last_message: {
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-        count: 8,
-        date: "09/08/24",
-      },
-      status: status.ONLINE,
-    },
-    {
-      id: 8,
-      name: "Anmol",
-      last_message: {
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-        count: 8,
-        date: "09/08/24",
-      },
-      status: status.OFFLINE,
-    },
-  ];
-
   const active = useTabState((state) => state.dTSelection);
   const setActive = useTabState((state) => state.changeDTSelection);
 
   return (
     <div className="mt-4 pb-16 h-[calc(100vh-244px)] overflow-y-auto">
-      {data.map((member) => (
+      {dtdata.map((member) => (
         <Member
           key={member.id}
           data={member}
