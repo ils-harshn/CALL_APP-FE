@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 import { IoAddOutline, IoCall, IoMicOutline, IoSearch } from "react-icons/io5";
 import { IconButton, IconButtonSecondary } from "../../../components/Buttons";
 import { status_color } from "../Chat/DirectTab";
@@ -7,9 +9,19 @@ import { LuSticker } from "react-icons/lu";
 import { MdEmojiEmotions } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
 
+const dropIn = {
+  hidden: { y: "-100vh", opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { type: "tween", duration: 0.5 } },
+};
+
 const StatusBar = ({ data }) => {
   return (
-    <div className="bg-white flex items-center h-20 px-8 py-4 border-b">
+    <motion.div
+      className="bg-white flex items-center h-20 px-8 py-4 border-b m-4 rounded-full shadow-sm"
+      initial="hidden"
+      animate="visible"
+      variants={dropIn}
+    >
       <div className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl relative">
         <div
           className={`absolute w-4 h-4 top-[-2px] right-[-2px] rounded-full border-2 border-white ${
@@ -44,7 +56,7 @@ const StatusBar = ({ data }) => {
           </IconButton>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -83,7 +95,7 @@ const MessageInput = ({ data }) => {
 const MessageLists = ({ data }) => {
   return (
     <div
-      className={`message-list-${data.id} h-[calc(100vh-10rem)] overflow-y-auto`}
+      className={`message-list-${data.id} h-[calc(100vh-12rem)] overflow-y-auto`}
     ></div>
   );
 };
