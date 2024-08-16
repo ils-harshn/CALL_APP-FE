@@ -7,6 +7,7 @@ import { FirstTabsOptions, SecondTabsOptions } from "./TabsOptions";
 import Tab from "./Tab";
 import CallpasserRight from "./CallpasserRight";
 import AddFriendButton from "./AddFriend";
+import { Notifications } from "./Notification";
 
 const CPLSearchInput = ({ toggleOpenSearch }) => {
   const inputRef = useRef();
@@ -76,6 +77,7 @@ const CallpasserLeft = () => {
       </div>
       <Tab />
       <AddFriendButton />
+      <Notifications />
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { useProfile } from "../../../apis/auth/queryHooks";
 import Logo from "../../../images/logo.png";
 import { GoStarFill } from "react-icons/go";
 import { IconButton } from "../../../components/Buttons";
-import { IoDocumentText, IoNotifications } from "react-icons/io5";
+import { IoDocumentText } from "react-icons/io5";
 import { BsPeopleFill } from "react-icons/bs";
 import { IoIosSettings } from "react-icons/io";
 import { RiShutDownLine } from "react-icons/ri";
@@ -13,6 +13,7 @@ import notify from "../../../utils/notify";
 import { LuMaximize, LuMinimize } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
+import NotificationButton from "../../home/Notification";
 
 const FullScreenToggleButton = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -76,7 +77,7 @@ const UserProfile = () => {
   );
 };
 
-const SideMenubutton = ({ children, className = "" }) => {
+export const SideMenubutton = ({ children, className = "" }) => {
   return (
     <li className={`${className} pt-7 flex justify-center`}>{children}</li>
   );
@@ -127,9 +128,7 @@ const SideBar = ({ className = "" }) => {
         <AddFriendButton />
 
         <SideMenubutton>
-          <IconButton>
-            <IoNotifications />
-          </IconButton>
+          <NotificationButton />
         </SideMenubutton>
 
         <SideMenubutton>
