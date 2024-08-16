@@ -6,7 +6,7 @@ import { dtdata } from "../Chat/DirectTab";
 
 const Member = ({ data }) => {
   return (
-    <div className="px-10 py-4 flex cursor-pointer border-l hover:bg-blue-50">
+    <div className="px-9 py-4 flex cursor-pointer border-l hover:bg-blue-50">
       <div className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl">
         {data.name[0].toUpperCase()}
       </div>
