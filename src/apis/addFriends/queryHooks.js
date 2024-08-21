@@ -12,10 +12,6 @@ export const useSearchFriends = (payload = {}, config = {}) =>
     getNextPageParam: (lastPage, pages) => {
       return lastPage.length > 0 ? pages.length + 1 : undefined;
     },
-    select: (data) => {
-      // Flatten the pages array to combine all results
-      return data.pages.flat();
-    },
     ...commonConfig,
     ...config,
   });

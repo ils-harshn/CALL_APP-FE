@@ -74,7 +74,11 @@ const List = ({ payload }) => {
     hasNextPage,
     isFetchingNextPage,
     isLoading,
-  } = useSearchFriends(payload, {});
+  } = useSearchFriends(payload, {
+    select: (data) => {
+      return data.pages.flat();
+    },
+  });
 
   const isRowLoaded = useCallback(
     ({ index }) => {
