@@ -5,7 +5,7 @@ import {
   IoClose,
   IoSearch,
 } from "react-icons/io5";
-import { IconButton, IconButtonSecondary } from "../../../components/Buttons";
+import { IconButtonSecondary } from "../../../components/Buttons";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
 import { useState, useCallback } from "react";
 import { InfiniteLoader, List as VList, AutoSizer } from "react-virtualized";
