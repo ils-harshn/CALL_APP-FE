@@ -2,8 +2,22 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IoAddOutline, IoClose, IoSearch } from "react-icons/io5";
 import { IconButton, IconButtonSecondary } from "../../../components/Buttons";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useState, useCallback } from "react";
+import { InfiniteLoader, List as VList, AutoSizer } from "react-virtualized";
 import { useSearchFriends } from "../../../apis/addFriends/queryHooks";
+import Skeleton from "react-loading-skeleton";
+
+const MemberSkeleton = () => {
+  return (
+    <div className="px-9 py-4 flex cursor-pointer border-l">
+      <Skeleton circle width={48} height={48} />
+      <div className="ml-4 flex-grow min-w-0 py-2">
+        <Skeleton width={120} />
+      </div>
+      <Skeleton circle width={48} height={48} />
+    </div>
+  );
+};
 
 const Member = ({ data }) => {
   return (
@@ -25,33 +39,84 @@ const Member = ({ data }) => {
   );
 };
 
-const List = ({ payload = {} }) => {
-  const { data, isLoading } = useSearchFriends(payload, {});
-  const scrollableRef = useRef(null);
+const List = ({ payload }) => {
+  const {
+    data = [],
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useSearchFriends(payload, {});
+
+  const isRowLoaded = useCallback(
+    ({ index }) => {
+      return !!data[index];
+    },
+    [data]
+  );
+
+  const loadMoreRows = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      return fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   if (isLoading)
     return (
-      <div className="mt-4 h-[calc(100vh-108px)] overflow-y-auto">
-        <div className="text-center m-16">
-          <p>Loading...</p>
-        </div>
+      <div className="mt-4 h-[calc(100vh-108px)]">
+        {Array.from({ length: 4 }, (_, index) => (
+          <MemberSkeleton key={index} />
+        ))}
+      </div>
+    );
+
+  if (isLoading === false && data?.length === 0)
+    return (
+      <div className="mt-8 p-4 text-center">
+        No user found with this username!
       </div>
     );
 
   return (
-    <div
-      className="mt-4 h-[calc(100vh-108px)] overflow-y-auto"
-      ref={scrollableRef}
-    >
-      <div>
-        {data?.pages.map((page, pageNumber) => (
-          <Fragment key={pageNumber}>
-            {page.map((member) => (
-              <Member key={member._id} data={member} />
-            ))}
-          </Fragment>
-        ))}
-      </div>
+    <div className="mt-4 h-[calc(100vh-108px)]">
+      <AutoSizer>
+        {({ height, width }) => (
+          <InfiniteLoader
+            isRowLoaded={isRowLoaded}
+            loadMoreRows={loadMoreRows}
+            rowCount={data.length + (hasNextPage ? 2 : 0)} // Adjust row count
+          >
+            {({ onRowsRendered, registerChild }) => (
+              <VList
+                height={height}
+                width={width}
+                rowHeight={80}
+                rowCount={data.length + (isFetchingNextPage ? 2 : 0)} // Adjust row count
+                rowRenderer={({ index, key, style }) => {
+                  if (isFetchingNextPage && index >= data.length) {
+                    return (
+                      <div key={key} style={style}>
+                        <MemberSkeleton />
+                        <MemberSkeleton />
+                      </div>
+                    );
+                  }
+
+                  const member = data[index];
+                  if (!member) return null;
+                  return (
+                    <div key={key} style={style}>
+                      <Member data={member} />
+                    </div>
+                  );
+                }}
+                onRowsRendered={onRowsRendered}
+                ref={registerChild}
+              />
+            )}
+          </InfiniteLoader>
+        )}
+      </AutoSizer>
     </div>
   );
 };
@@ -60,10 +125,6 @@ const SearchFriends = ({ closeTab }) => {
   const [payload, setPayload] = useState({
     username: "",
   });
-
-  useEffect(() => {
-    console.log("asdasd");
-  }, []);
 
   return (
     <motion.div
@@ -91,7 +152,13 @@ const SearchFriends = ({ closeTab }) => {
           </IconButtonSecondary>
         </div>
       </div>
-      <List payload={payload} />
+      {payload.username ? (
+        <List payload={payload} />
+      ) : (
+        <div className="mt-8 p-4 text-center">
+          Please Type In Username to Search friend!
+        </div>
+      )}
     </motion.div>
   );
 };

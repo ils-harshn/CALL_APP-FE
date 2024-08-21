@@ -6,12 +6,15 @@ import { searchFriends } from "./queryFunction";
 export const useSearchFriends = (payload = {}, config = {}) =>
   useInfiniteQuery({
     queryFn: ({ pageParam = 1 }) => {
-      payload.page = pageParam;
-      return searchFriends(payload);
+      return searchFriends(payload, pageParam);
     },
     queryKey: [QUERY_KEYS.SEARCH_FRIENDS, payload],
     getNextPageParam: (lastPage, pages) => {
       return lastPage.length > 0 ? pages.length + 1 : undefined;
+    },
+    select: (data) => {
+      // Flatten the pages array to combine all results
+      return data.pages.flat();
     },
     ...commonConfig,
     ...config,

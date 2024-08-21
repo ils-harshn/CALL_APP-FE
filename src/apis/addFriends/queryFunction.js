@@ -1,13 +1,13 @@
 import { authApi } from "../api";
 import ENDPOINTS from "../endpoints";
 
-export const searchFriends = async (payload) => {
+export const searchFriends = async (payload, pageParam) => {
   const response = await authApi({
     method: "get",
     url: ENDPOINTS.search_friends,
     params: {
-      page: payload?.page || 1,
-      limit: payload?.limit || 10,
+      page: pageParam,
+      limit: 10,
       username: payload?.username || "",
     },
   });
