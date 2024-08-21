@@ -4,6 +4,7 @@ import { IconButton, IconButtonSecondary } from "../../../components/Buttons";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
 import { useState, useCallback } from "react";
 import { InfiniteLoader, List as VList, AutoSizer } from "react-virtualized";
+import { useDebounce } from "use-debounce";
 import { useSearchFriends } from "../../../apis/addFriends/queryHooks";
 import Skeleton from "react-loading-skeleton";
 
@@ -126,6 +127,8 @@ const SearchFriends = ({ closeTab }) => {
     username: "",
   });
 
+  const [debouncedPayload] = useDebounce(payload, 300);
+
   return (
     <motion.div
       className="absolute top-0 left-0 w-full h-full bg-white overflow-y-auto"
@@ -152,8 +155,8 @@ const SearchFriends = ({ closeTab }) => {
           </IconButtonSecondary>
         </div>
       </div>
-      {payload.username ? (
-        <List payload={payload} />
+      {debouncedPayload.username ? (
+        <List payload={debouncedPayload} />
       ) : (
         <div className="mt-8 p-4 text-center">
           Please Type In Username to Search friend!
