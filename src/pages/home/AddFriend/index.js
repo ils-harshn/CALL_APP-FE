@@ -1,5 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { IoAddOutline, IoClose, IoSearch } from "react-icons/io5";
+import {
+  IoAddOutline,
+  IoCheckmarkDoneCircleOutline,
+  IoClose,
+  IoSearch,
+} from "react-icons/io5";
 import { IconButton, IconButtonSecondary } from "../../../components/Buttons";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
 import { useState, useCallback } from "react";
@@ -7,6 +12,14 @@ import { InfiniteLoader, List as VList, AutoSizer } from "react-virtualized";
 import { useDebounce } from "use-debounce";
 import { useSearchFriends } from "../../../apis/addFriends/queryHooks";
 import Skeleton from "react-loading-skeleton";
+import { PiClockCountdownBold } from "react-icons/pi";
+import { ImCancelCircle } from "react-icons/im";
+
+export const CONNECTION_REQUEST_STATUS = {
+  PENDING: "pending",
+  ACCEPTED: "accepted",
+  REJECTED: "rejected",
+};
 
 const MemberSkeleton = () => {
   return (
@@ -32,9 +45,23 @@ const Member = ({ data }) => {
         </h4>
       </div>
       <div>
-        <IconButton>
-          <IoAddOutline />
-        </IconButton>
+        {CONNECTION_REQUEST_STATUS.ACCEPTED === data?.connection.status ? (
+          <IconButtonSecondary className="text-lg bg-green-400 text-white hover:bg-green-500 duration-300">
+            <IoCheckmarkDoneCircleOutline />
+          </IconButtonSecondary>
+        ) : CONNECTION_REQUEST_STATUS.PENDING === data?.connection.status ? (
+          <IconButtonSecondary className="text-lg bg-yellow-400 text-white hover:bg-yellow-500 duration-300">
+            <PiClockCountdownBold />
+          </IconButtonSecondary>
+        ) : CONNECTION_REQUEST_STATUS.REJECTED === data?.connection.status ? (
+          <IconButtonSecondary className="text-lg bg-red-400 text-white hover:bg-red-500 duration-300">
+            <ImCancelCircle />
+          </IconButtonSecondary>
+        ) : (
+          <IconButtonSecondary className="text-lg bg-blue-400 text-white hover:bg-blue-500 duration-300">
+            <IoAddOutline />
+          </IconButtonSecondary>
+        )}
       </div>
     </div>
   );
