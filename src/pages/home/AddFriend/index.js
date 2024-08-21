@@ -2,17 +2,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IoAddOutline, IoClose, IoSearch } from "react-icons/io5";
 import { IconButton, IconButtonSecondary } from "../../../components/Buttons";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
-import { dtdata } from "../Chat/DirectTab";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { useSearchFriends } from "../../../apis/addFriends/queryHooks";
 
 const Member = ({ data }) => {
   return (
     <div className="px-9 py-4 flex cursor-pointer border-l hover:bg-blue-50">
       <div className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl">
-        {data.name[0].toUpperCase()}
+        {data?.full_name[0].toUpperCase()}
       </div>
       <div className="ml-4 flex-grow min-w-0 items-center py-2">
         <h4 className="font-semibold w-full text-ellipsis overflow-hidden whitespace-nowrap">
-          {data.name}
+          {data?.full_name}
         </h4>
       </div>
       <div>
@@ -24,17 +25,46 @@ const Member = ({ data }) => {
   );
 };
 
-const List = () => {
+const List = ({ payload = {} }) => {
+  const { data, isLoading } = useSearchFriends(payload, {});
+  const scrollableRef = useRef(null);
+
+  if (isLoading)
+    return (
+      <div className="mt-4 h-[calc(100vh-108px)] overflow-y-auto">
+        <div className="text-center m-16">
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+
   return (
-    <div className="mt-4 h-[calc(100vh-108px)] overflow-y-auto">
-      {dtdata.map((member) => (
-        <Member key={member.id} data={member} />
-      ))}
+    <div
+      className="mt-4 h-[calc(100vh-108px)] overflow-y-auto"
+      ref={scrollableRef}
+    >
+      <div>
+        {data?.pages.map((page, pageNumber) => (
+          <Fragment key={pageNumber}>
+            {page.map((member) => (
+              <Member key={member._id} data={member} />
+            ))}
+          </Fragment>
+        ))}
+      </div>
     </div>
   );
 };
 
 const SearchFriends = ({ closeTab }) => {
+  const [payload, setPayload] = useState({
+    username: "",
+  });
+
+  useEffect(() => {
+    console.log("asdasd");
+  }, []);
+
   return (
     <motion.div
       className="absolute top-0 left-0 w-full h-full bg-white overflow-y-auto"
@@ -49,6 +79,9 @@ const SearchFriends = ({ closeTab }) => {
           <input
             placeholder="Search by Username or Email"
             className="flex-grow px-2 py-2 focus:outline-none"
+            onChange={(e) =>
+              setPayload((prev) => ({ ...prev, username: e.target.value }))
+            }
           ></input>
           <IconButtonSecondary
             onClick={closeTab}
@@ -58,7 +91,7 @@ const SearchFriends = ({ closeTab }) => {
           </IconButtonSecondary>
         </div>
       </div>
-      <List />
+      <List payload={payload} />
     </motion.div>
   );
 };
