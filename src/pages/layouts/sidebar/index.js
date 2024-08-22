@@ -14,6 +14,7 @@ import { LuMaximize, LuMinimize } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
 import NotificationButton from "../../home/Notification";
+import { useQueryClient } from "react-query";
 
 const FullScreenToggleButton = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -52,10 +53,12 @@ const FullScreenToggleButton = () => {
 
 const Logout = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const logout = () => {
     localStorage.clear();
     navigate(ROUTES.LOGIN);
+    queryClient.clear();
     notify.info("Logged out successfully!");
   };
 

@@ -47,6 +47,7 @@ export const IconButton = ({
 };
 
 export const IconButtonSecondary = ({
+  btitle = "",
   title = "",
   children,
   className = "",
@@ -55,6 +56,7 @@ export const IconButtonSecondary = ({
   return (
     <>
       <button
+        title={btitle}
         className={`${className} w-10 h-10 rounded-full flex justify-center items-center`}
         {...props}
       >

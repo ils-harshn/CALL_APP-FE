@@ -14,6 +14,7 @@ import { useDebounce } from "use-debounce";
 import { useSearchFriends } from "../../../apis/addFriends/queryHooks";
 import Skeleton from "react-loading-skeleton";
 import { PiClockCountdownBold } from "react-icons/pi";
+import { CgUnblock } from "react-icons/cg";
 import { ImCancelCircle } from "react-icons/im";
 import { useQueryClient } from "react-query";
 import QUERY_KEYS from "../../../apis/queryKeys";
@@ -46,18 +47,51 @@ const PendingRequestButton = ({ request }) => {
   if (data._id === request.recipient)
     return (
       <div className="flex items-center">
-        <IconButtonSecondary className="text-lg bg-red-400 text-white hover:bg-red-500 duration-300 mx-2">
+        <IconButtonSecondary
+          btitle="Reject connection request!"
+          className="text-lg bg-red-400 text-white hover:bg-red-500 duration-300 mx-2"
+        >
           <IoCloseSharp />
         </IconButtonSecondary>
-        <IconButtonSecondary className="text-lg bg-green-400 text-white hover:bg-green-500 duration-300">
+        <IconButtonSecondary
+          btitle="Accept connection request!"
+          className="text-lg bg-green-400 text-white hover:bg-green-500 duration-300"
+        >
           <MdDone />
         </IconButtonSecondary>
       </div>
     );
 
   return (
-    <IconButtonSecondary className="text-lg bg-yellow-400 text-white hover:bg-yellow-500 duration-300">
+    <IconButtonSecondary
+      btitle="Your connection request is pending!"
+      className="text-lg bg-yellow-400 text-white hover:bg-yellow-500 duration-300"
+    >
       <PiClockCountdownBold />
+    </IconButtonSecondary>
+  );
+};
+
+const RejectedRequestButton = ({ request }) => {
+  const { data, isLoading } = useProfile();
+  if (isLoading) return null;
+
+  if (data._id === request.recipient)
+    return (
+      <IconButtonSecondary
+        btitle="Accept the rejected connection request!"
+        className="text-lg bg-purple-400 text-white hover:bg-purple-500 duration-300"
+      >
+        <CgUnblock />
+      </IconButtonSecondary>
+    );
+
+  return (
+    <IconButtonSecondary
+      btitle="Your connection request has been rejected!"
+      className="text-lg bg-red-400 text-white hover:bg-red-500 duration-300"
+    >
+      <ImCancelCircle />
     </IconButtonSecondary>
   );
 };
@@ -76,17 +110,21 @@ const Member = ({ data }) => {
       </div>
       <div>
         {CONNECTION_REQUEST_STATUS.ACCEPTED === data?.connection.status ? (
-          <IconButtonSecondary className="text-lg bg-green-400 text-white hover:bg-green-500 duration-300">
+          <IconButtonSecondary
+            btitle="Your connection request has been accepted!"
+            className="text-lg bg-green-400 text-white hover:bg-green-500 duration-300"
+          >
             <IoCheckmarkDoneCircleOutline />
           </IconButtonSecondary>
         ) : CONNECTION_REQUEST_STATUS.PENDING === data?.connection.status ? (
           <PendingRequestButton request={data.connection} />
         ) : CONNECTION_REQUEST_STATUS.REJECTED === data?.connection.status ? (
-          <IconButtonSecondary className="text-lg bg-red-400 text-white hover:bg-red-500 duration-300">
-            <ImCancelCircle />
-          </IconButtonSecondary>
+          <RejectedRequestButton request={data.connection} />
         ) : (
-          <IconButtonSecondary className="text-lg bg-blue-400 text-white hover:bg-blue-500 duration-300">
+          <IconButtonSecondary
+            btitle="Send a connection request!"
+            className="text-lg bg-blue-400 text-white hover:bg-blue-500 duration-300"
+          >
             <IoAddOutline />
           </IconButtonSecondary>
         )}
