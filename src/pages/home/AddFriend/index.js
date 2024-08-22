@@ -3,6 +3,7 @@ import {
   IoAddOutline,
   IoCheckmarkDoneCircleOutline,
   IoClose,
+  IoCloseSharp,
   IoSearch,
 } from "react-icons/io5";
 import { IconButtonSecondary, SMButton } from "../../../components/Buttons";
@@ -16,6 +17,8 @@ import { PiClockCountdownBold } from "react-icons/pi";
 import { ImCancelCircle } from "react-icons/im";
 import { useQueryClient } from "react-query";
 import QUERY_KEYS from "../../../apis/queryKeys";
+import { useProfile } from "../../../apis/auth/queryHooks";
+import { MdDone } from "react-icons/md";
 
 export const CONNECTION_REQUEST_STATUS = {
   PENDING: "pending",
@@ -33,6 +36,29 @@ const MemberSkeleton = () => {
       </div>
       <Skeleton circle width={48} height={48} />
     </div>
+  );
+};
+
+const PendingRequestButton = ({ request }) => {
+  const { data, isLoading } = useProfile();
+  if (isLoading) return null;
+
+  if (data._id === request.recipient)
+    return (
+      <div className="flex items-center">
+        <IconButtonSecondary className="text-lg bg-red-400 text-white hover:bg-red-500 duration-300 mx-2">
+          <IoCloseSharp />
+        </IconButtonSecondary>
+        <IconButtonSecondary className="text-lg bg-green-400 text-white hover:bg-green-500 duration-300">
+          <MdDone />
+        </IconButtonSecondary>
+      </div>
+    );
+
+  return (
+    <IconButtonSecondary className="text-lg bg-yellow-400 text-white hover:bg-yellow-500 duration-300">
+      <PiClockCountdownBold />
+    </IconButtonSecondary>
   );
 };
 
@@ -54,9 +80,7 @@ const Member = ({ data }) => {
             <IoCheckmarkDoneCircleOutline />
           </IconButtonSecondary>
         ) : CONNECTION_REQUEST_STATUS.PENDING === data?.connection.status ? (
-          <IconButtonSecondary className="text-lg bg-yellow-400 text-white hover:bg-yellow-500 duration-300">
-            <PiClockCountdownBold />
-          </IconButtonSecondary>
+          <PendingRequestButton request={data.connection} />
         ) : CONNECTION_REQUEST_STATUS.REJECTED === data?.connection.status ? (
           <IconButtonSecondary className="text-lg bg-red-400 text-white hover:bg-red-500 duration-300">
             <ImCancelCircle />
@@ -112,7 +136,9 @@ const List = ({ payload }) => {
   if (isLoading === false && data?.length === 0)
     return (
       <div className="mt-4 p-4 text-center">
-        No user found with this username!
+        No results found.
+        <br />
+        Try adjusting your search criteria.
       </div>
     );
 
@@ -176,7 +202,7 @@ const Filter = ({ closeTab }) => {
         <div className="flex items-center border-b pb-2">
           <IoSearch />
           <input
-            placeholder="Search by Username or Email"
+            placeholder="Search Friend by Username"
             className="flex-grow px-2 py-2 focus:outline-none"
             value={username}
             onChange={(e) => setUsername(e.target.value)}

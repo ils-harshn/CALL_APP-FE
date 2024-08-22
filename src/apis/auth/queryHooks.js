@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import QUERY_KEYS from "../queryKeys";
 import {
   login,
@@ -41,10 +41,27 @@ export const useLoginMutation = (config = {}) =>
     ...config,
   });
 
-export const useProfile = (config = {}) =>
-  useQuery({
+export const useProfile = (config = {}) => {
+  const queryClient = useQueryClient();
+
+  return useQuery({
     queryKey: [QUERY_KEYS.PROFILE],
     queryFn: profile,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    onSuccess: (data) => {
+      // Ensure the data is always available in the cache
+      queryClient.setQueryData([QUERY_KEYS.PROFILE], data);
+
+      // Call the original onSuccess if provided
+      if (config.onSuccess) {
+        config.onSuccess(data);
+      }
+    },
     ...commonConfig,
     ...config,
   });
+};
