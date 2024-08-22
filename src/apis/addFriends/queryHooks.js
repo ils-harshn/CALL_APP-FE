@@ -1,7 +1,7 @@
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useMutation } from "react-query";
 import QUERY_KEYS from "../queryKeys";
 import commonConfig from "../commonConfig";
-import { searchFriends } from "./queryFunction";
+import { searchFriends, sendConnectionRequest } from "./queryFunction";
 
 export const useSearchFriends = (payload = {}, config = {}) =>
   useInfiniteQuery({
@@ -12,6 +12,14 @@ export const useSearchFriends = (payload = {}, config = {}) =>
     getNextPageParam: (lastPage, pages) => {
       return lastPage.length > 0 ? pages.length + 1 : undefined;
     },
+    ...commonConfig,
+    ...config,
+  });
+
+export const useSendConnectionRequest = (config = {}) =>
+  useMutation({
+    mutationFn: (payload) => sendConnectionRequest(payload),
+    mutationKey: [QUERY_KEYS.SEND_CONNECTION_REQUEST],
     ...commonConfig,
     ...config,
   });

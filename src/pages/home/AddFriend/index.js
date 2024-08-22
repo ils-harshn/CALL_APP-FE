@@ -11,7 +11,10 @@ import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
 import { useState, useCallback, useEffect } from "react";
 import { InfiniteLoader, List as VList, AutoSizer } from "react-virtualized";
 import { useDebounce } from "use-debounce";
-import { useSearchFriends } from "../../../apis/addFriends/queryHooks";
+import {
+  useSearchFriends,
+  useSendConnectionRequest,
+} from "../../../apis/addFriends/queryHooks";
 import Skeleton from "react-loading-skeleton";
 import { PiClockCountdownBold } from "react-icons/pi";
 import { CgUnblock } from "react-icons/cg";
@@ -20,6 +23,7 @@ import { useQueryClient } from "react-query";
 import QUERY_KEYS from "../../../apis/queryKeys";
 import { useProfile } from "../../../apis/auth/queryHooks";
 import { MdDone } from "react-icons/md";
+import sendRequestTempStore from "../../../store/sendRequestTempStore";
 
 export const CONNECTION_REQUEST_STATUS = {
   PENDING: "pending",
@@ -96,6 +100,49 @@ const RejectedRequestButton = ({ request }) => {
   );
 };
 
+const SendRequestButton = ({ data }) => {
+  const requestSent = sendRequestTempStore((state) => state?.[data._id]);
+  const changeRequestStatus = sendRequestTempStore((state) => state.cache);
+  const { mutate, isLoading } = useSendConnectionRequest({
+    onSuccess: (values) => {
+      console.log(values);
+      changeRequestStatus({
+        key: data._id,
+        value: true,
+      });
+    },
+  });
+
+  const sendRequest = async () => {
+    mutate({
+      recipientId: data._id,
+    });
+  };
+
+  if (requestSent)
+    return (
+      <IconButtonSecondary
+        btitle="Your connection request is pending!"
+        className="text-lg bg-yellow-400 text-white hover:bg-yellow-500 duration-300"
+      >
+        <PiClockCountdownBold />
+      </IconButtonSecondary>
+    );
+
+  return (
+    <IconButtonSecondary
+      onClick={sendRequest}
+      btitle="Send a connection request!"
+      className={`text-lg bg-blue-400 text-white hover:bg-blue-500 duration-300 ${
+        isLoading ? "cursor-wait" : ""
+      }`}
+      disabled={isLoading}
+    >
+      <IoAddOutline />
+    </IconButtonSecondary>
+  );
+};
+
 const Member = ({ data }) => {
   return (
     <div className="px-9 py-4 flex cursor-pointer border-l hover:bg-blue-50">
@@ -121,12 +168,7 @@ const Member = ({ data }) => {
         ) : CONNECTION_REQUEST_STATUS.REJECTED === data?.connection.status ? (
           <RejectedRequestButton request={data.connection} />
         ) : (
-          <IconButtonSecondary
-            btitle="Send a connection request!"
-            className="text-lg bg-blue-400 text-white hover:bg-blue-500 duration-300"
-          >
-            <IoAddOutline />
-          </IconButtonSecondary>
+          <SendRequestButton data={data} />
         )}
       </div>
     </div>
@@ -146,7 +188,8 @@ const List = ({ payload }) => {
     },
     refetchOnMount: false,
     refetchOnReconnect: false,
-    staleTime: Infinity,
+    staleTime: 0,
+    cacheTime: 0,
   });
 
   const isRowLoaded = useCallback(
@@ -312,12 +355,14 @@ const Filter = ({ closeTab }) => {
 
 const SearchFriends = ({ closeTab }) => {
   const queryClient = useQueryClient();
+  const tempStoreClear = sendRequestTempStore((state) => state.clear);
 
   useEffect(() => {
     return () => {
       queryClient.removeQueries(QUERY_KEYS.SEARCH_FRIENDS);
+      tempStoreClear();
     };
-  }, [queryClient]);
+  }, [queryClient, tempStoreClear]);
 
   return (
     <motion.div

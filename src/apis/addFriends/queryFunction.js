@@ -14,3 +14,12 @@ export const searchFriends = async (payload, pageParam) => {
   });
   return response.data;
 };
+
+export const sendConnectionRequest = async (payload) => {
+  const response = await authApi({
+    method: "post",
+    url: ENDPOINTS.send_connection_request,
+    data: payload,
+  });
+  return response.data;
+};
