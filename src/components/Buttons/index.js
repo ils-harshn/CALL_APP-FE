@@ -109,3 +109,21 @@ export const BadgeButton = ({
     </button>
   );
 };
+
+export const SMButton = ({
+  children,
+  isActive = false,
+  className = "",
+  ...props
+}) => {
+  return (
+    <button
+      className={`${className} ${
+        isActive ? "bg-blue-100 text-blue-600" : "bg-slate-100 text-slate-700"
+      } p-2 border rounded-lg text-xs hover:bg-blue-400 hover:text-white duration-300`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};

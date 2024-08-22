@@ -2,7 +2,6 @@ import { IoClose, IoNotifications } from "react-icons/io5";
 import { IconButton, IconButtonSecondary } from "../../../components/Buttons";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
 
 const Dot = () => {
   return (

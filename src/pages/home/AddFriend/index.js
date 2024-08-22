@@ -5,7 +5,7 @@ import {
   IoClose,
   IoSearch,
 } from "react-icons/io5";
-import { IconButtonSecondary } from "../../../components/Buttons";
+import { IconButtonSecondary, SMButton } from "../../../components/Buttons";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
 import { useState, useCallback } from "react";
 import { InfiniteLoader, List as VList, AutoSizer } from "react-virtualized";
@@ -104,13 +104,13 @@ const List = ({ payload }) => {
 
   if (isLoading === false && data?.length === 0)
     return (
-      <div className="mt-8 p-4 text-center">
+      <div className="mt-4 p-4 text-center">
         No user found with this username!
       </div>
     );
 
   return (
-    <div className="mt-4 h-[calc(100vh-108px)]">
+    <div className="mt-4 h-[calc(100vh-240px)]">
       <AutoSizer>
         {({ height, width }) => (
           <InfiniteLoader
@@ -154,8 +154,14 @@ const List = ({ payload }) => {
 };
 
 const SearchFriends = ({ closeTab }) => {
+  const PAYLOAD_FOR = {
+    SEARCH: "search",
+    ...CONNECTION_REQUEST_STATUS,
+  };
+
   const [payload, setPayload] = useState({
     username: "",
+    for: PAYLOAD_FOR.SEARCH,
   });
 
   const [debouncedPayload] = useDebounce(payload, 300);
@@ -169,6 +175,13 @@ const SearchFriends = ({ closeTab }) => {
       transition={{ duration: 0.3 }}
     >
       <div className="px-10 pt-10">
+        <h4 className="text-2xl font-bold text-slate-700">
+          Connection Requests
+        </h4>
+        <p className="text-slate-700 mb-4">
+          Search Friends or Checkout requests!
+        </p>
+
         <div className="flex items-center border-b pb-2">
           <IoSearch />
           <input
@@ -186,10 +199,18 @@ const SearchFriends = ({ closeTab }) => {
           </IconButtonSecondary>
         </div>
       </div>
+
+      <div className="flex px-10 mt-4 justify-between items-center">
+        <SMButton>Search</SMButton>
+        <SMButton>Pending</SMButton>
+        <SMButton>Accepted</SMButton>
+        <SMButton>Rejected</SMButton>
+      </div>
+
       {debouncedPayload.username ? (
         <List payload={debouncedPayload} />
       ) : (
-        <div className="mt-8 p-4 text-center">
+        <div className="mt-4 p-4 text-center">
           Please Type In Username to Search friend!
         </div>
       )}
