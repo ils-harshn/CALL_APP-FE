@@ -7,13 +7,15 @@ import {
 } from "react-icons/io5";
 import { IconButtonSecondary, SMButton } from "../../../components/Buttons";
 import useSubTabState, { SUB_TABS } from "../../../store/subTabState";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { InfiniteLoader, List as VList, AutoSizer } from "react-virtualized";
 import { useDebounce } from "use-debounce";
 import { useSearchFriends } from "../../../apis/addFriends/queryHooks";
 import Skeleton from "react-loading-skeleton";
 import { PiClockCountdownBold } from "react-icons/pi";
 import { ImCancelCircle } from "react-icons/im";
+import { useQueryClient } from "react-query";
+import QUERY_KEYS from "../../../apis/queryKeys";
 
 export const CONNECTION_REQUEST_STATUS = {
   PENDING: "pending",
@@ -27,6 +29,7 @@ const MemberSkeleton = () => {
       <Skeleton circle width={48} height={48} />
       <div className="ml-4 flex-grow min-w-0 py-2">
         <Skeleton width={120} />
+        <Skeleton width={60} height={14} />
       </div>
       <Skeleton circle width={48} height={48} />
     </div>
@@ -39,10 +42,11 @@ const Member = ({ data }) => {
       <div className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl">
         {data?.full_name[0].toUpperCase()}
       </div>
-      <div className="ml-4 flex-grow min-w-0 items-center py-2">
+      <div className="ml-4 flex-grow min-w-0 items-center">
         <h4 className="font-semibold w-full text-ellipsis overflow-hidden whitespace-nowrap">
           {data?.full_name}
         </h4>
+        <p className="text-sm">@{data?.username}</p>
       </div>
       <div>
         {CONNECTION_REQUEST_STATUS.ACCEPTED === data?.connection.status ? (
@@ -78,6 +82,9 @@ const List = ({ payload }) => {
     select: (data) => {
       return data.pages.flat();
     },
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    staleTime: Infinity,
   });
 
   const isRowLoaded = useCallback(
@@ -95,7 +102,7 @@ const List = ({ payload }) => {
 
   if (isLoading)
     return (
-      <div className="mt-4 h-[calc(100vh-108px)]">
+      <div className="mt-4 h-[calc(100vh-230px)]">
         {Array.from({ length: 4 }, (_, index) => (
           <MemberSkeleton key={index} />
         ))}
@@ -110,7 +117,7 @@ const List = ({ payload }) => {
     );
 
   return (
-    <div className="mt-4 h-[calc(100vh-240px)]">
+    <div className="mt-4 h-[calc(100vh-230px)]">
       <AutoSizer>
         {({ height, width }) => (
           <InfiniteLoader
@@ -153,18 +160,100 @@ const List = ({ payload }) => {
   );
 };
 
-const SearchFriends = ({ closeTab }) => {
+const Filter = ({ closeTab }) => {
   const PAYLOAD_FOR = {
     SEARCH: "search",
     ...CONNECTION_REQUEST_STATUS,
   };
 
-  const [payload, setPayload] = useState({
-    username: "",
-    for: PAYLOAD_FOR.SEARCH,
-  });
+  const [username, setUsername] = useState("");
+  const [searchFor, setSearchFor] = useState(PAYLOAD_FOR.SEARCH);
 
-  const [debouncedPayload] = useDebounce(payload, 300);
+  const [debouncedUsername] = useDebounce(username, 300);
+  return (
+    <>
+      <div className="px-10">
+        <div className="flex items-center border-b pb-2">
+          <IoSearch />
+          <input
+            placeholder="Search by Username or Email"
+            className="flex-grow px-2 py-2 focus:outline-none"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          ></input>
+          <IconButtonSecondary
+            onClick={closeTab}
+            className="text-lg bg-slate-400 text-white hover:bg-slate-500 duration-300"
+          >
+            <IoClose />
+          </IconButtonSecondary>
+        </div>
+      </div>
+
+      <div className="flex px-10 mt-4 justify-between items-center">
+        <SMButton
+          isActive={searchFor === PAYLOAD_FOR.SEARCH}
+          onClick={() => setSearchFor(PAYLOAD_FOR.SEARCH)}
+        >
+          Search
+        </SMButton>
+        <SMButton
+          isActive={searchFor === PAYLOAD_FOR.PENDING}
+          onClick={() => setSearchFor(PAYLOAD_FOR.PENDING)}
+        >
+          Pending
+        </SMButton>
+        <SMButton
+          isActive={searchFor === PAYLOAD_FOR.ACCEPTED}
+          onClick={() => setSearchFor(PAYLOAD_FOR.ACCEPTED)}
+        >
+          Accepted
+        </SMButton>
+        <SMButton
+          isActive={searchFor === PAYLOAD_FOR.REJECTED}
+          onClick={() => setSearchFor(PAYLOAD_FOR.REJECTED)}
+        >
+          Rejected
+        </SMButton>
+      </div>
+
+      {searchFor === PAYLOAD_FOR.SEARCH ? (
+        debouncedUsername?.length >= 3 ? (
+          <List
+            payload={{
+              username: debouncedUsername,
+              searchFor,
+            }}
+          />
+        ) : (
+          <div className="mt-4 p-4 text-center">
+            Please Type In Username to Search friend!
+            <br />
+            <span className="text-yellow-500 text-sm">
+              Minimum three characters required!
+            </span>
+          </div>
+        )
+      ) : (
+        <List
+          payload={{
+            username: debouncedUsername,
+            searchFor,
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+const SearchFriends = ({ closeTab }) => {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(QUERY_KEYS.SEARCH_FRIENDS);
+    };
+  }, [queryClient]);
 
   return (
     <motion.div
@@ -181,39 +270,9 @@ const SearchFriends = ({ closeTab }) => {
         <p className="text-slate-700 mb-4">
           Search Friends or Checkout requests!
         </p>
-
-        <div className="flex items-center border-b pb-2">
-          <IoSearch />
-          <input
-            placeholder="Search by Username or Email"
-            className="flex-grow px-2 py-2 focus:outline-none"
-            onChange={(e) =>
-              setPayload((prev) => ({ ...prev, username: e.target.value }))
-            }
-          ></input>
-          <IconButtonSecondary
-            onClick={closeTab}
-            className="text-lg bg-slate-400 text-white hover:bg-slate-500 duration-300"
-          >
-            <IoClose />
-          </IconButtonSecondary>
-        </div>
       </div>
 
-      <div className="flex px-10 mt-4 justify-between items-center">
-        <SMButton>Search</SMButton>
-        <SMButton>Pending</SMButton>
-        <SMButton>Accepted</SMButton>
-        <SMButton>Rejected</SMButton>
-      </div>
-
-      {debouncedPayload.username ? (
-        <List payload={debouncedPayload} />
-      ) : (
-        <div className="mt-4 p-4 text-center">
-          Please Type In Username to Search friend!
-        </div>
-      )}
+      <Filter closeTab={closeTab} />
     </motion.div>
   );
 };

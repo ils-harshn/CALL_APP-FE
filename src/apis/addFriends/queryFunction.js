@@ -9,6 +9,7 @@ export const searchFriends = async (payload, pageParam) => {
       page: pageParam,
       limit: 10,
       username: payload?.username || "",
+      searchFor: payload?.searchFor || "search",
     },
   });
   return response.data;
