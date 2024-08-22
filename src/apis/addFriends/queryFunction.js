@@ -23,3 +23,13 @@ export const sendConnectionRequest = async (payload) => {
   });
   return response.data;
 };
+
+export const respondOnConnectionRequest = async (payload) => {
+  console.log(payload);
+  const response = await authApi({
+    method: "post",
+    url: ENDPOINTS.respond_on_connection_request,
+    data: payload,
+  });
+  return response.data;
+};

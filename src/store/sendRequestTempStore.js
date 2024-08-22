@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const sendRequestTempStore = create((set) => ({
+export const sendRequestTempStore = create((set) => ({
   cache: (newValue) => set({ [newValue.key]: newValue.value }),
   clear: () =>
     set(
@@ -12,4 +12,14 @@ const sendRequestTempStore = create((set) => ({
     ),
 }));
 
-export default sendRequestTempStore;
+export const acceptOrRejectRequestTempStore = create((set) => ({
+  cache: (newValue) => set({ [newValue.key]: newValue.value }),
+  clear: () =>
+    set(
+      (state) => ({
+        cache: state.cache,
+        clear: state.clear,
+      }),
+      true
+    ),
+}));

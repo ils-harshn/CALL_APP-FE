@@ -12,6 +12,7 @@ import { useState, useCallback, useEffect } from "react";
 import { InfiniteLoader, List as VList, AutoSizer } from "react-virtualized";
 import { useDebounce } from "use-debounce";
 import {
+  useRespondOnConnectionRequest,
   useSearchFriends,
   useSendConnectionRequest,
 } from "../../../apis/addFriends/queryHooks";
@@ -23,7 +24,10 @@ import { useQueryClient } from "react-query";
 import QUERY_KEYS from "../../../apis/queryKeys";
 import { useProfile } from "../../../apis/auth/queryHooks";
 import { MdDone } from "react-icons/md";
-import sendRequestTempStore from "../../../store/sendRequestTempStore";
+import {
+  acceptOrRejectRequestTempStore,
+  sendRequestTempStore,
+} from "../../../store/sendRequestTempStore";
 
 export const CONNECTION_REQUEST_STATUS = {
   PENDING: "pending",
@@ -44,27 +48,74 @@ const MemberSkeleton = () => {
   );
 };
 
+const AcceptOrRejectRequest = ({ request }) => {
+  const requestStatus = acceptOrRejectRequestTempStore(
+    (state) => state?.[request.requester]
+  );
+  const changeRequestStatus = acceptOrRejectRequestTempStore(
+    (state) => state.cache
+  );
+
+  const { mutate, isLoading } = useRespondOnConnectionRequest({
+    onSuccess: (values) => {
+      console.log(values);
+      changeRequestStatus({
+        key: request.requester,
+        value: values?.connection?.status,
+      });
+    },
+  });
+
+  const sendRequest = async (status) => {
+    mutate({
+      connectionId: request._id,
+      status,
+    });
+  };
+
+  if (requestStatus === CONNECTION_REQUEST_STATUS.ACCEPTED)
+    return (
+      <IconButtonSecondary
+        btitle="Your connection request has been accepted!"
+        className="text-lg bg-green-400 text-white hover:bg-green-500 duration-300"
+      >
+        <IoCheckmarkDoneCircleOutline />
+      </IconButtonSecondary>
+    );
+
+  if (requestStatus === CONNECTION_REQUEST_STATUS.REJECTED)
+    return <RejectedRequestButton request={request} />;
+
+  return (
+    <div className="flex items-center">
+      <IconButtonSecondary
+        onClick={() => sendRequest(CONNECTION_REQUEST_STATUS.REJECTED)}
+        btitle="Reject connection request!"
+        className={`text-lg bg-red-400 text-white hover:bg-red-500 duration-300 mx-2 ${
+          isLoading ? "cursor-wait" : ""
+        }`}
+      >
+        <IoCloseSharp />
+      </IconButtonSecondary>
+      <IconButtonSecondary
+        onClick={() => sendRequest(CONNECTION_REQUEST_STATUS.ACCEPTED)}
+        btitle="Accept connection request!"
+        className={`text-lg bg-green-400 text-white hover:bg-green-500 duration-300 ${
+          isLoading ? "cursor-wait" : ""
+        }`}
+      >
+        <MdDone />
+      </IconButtonSecondary>
+    </div>
+  );
+};
+
 const PendingRequestButton = ({ request }) => {
   const { data, isLoading } = useProfile();
   if (isLoading) return null;
 
   if (data._id === request.recipient)
-    return (
-      <div className="flex items-center">
-        <IconButtonSecondary
-          btitle="Reject connection request!"
-          className="text-lg bg-red-400 text-white hover:bg-red-500 duration-300 mx-2"
-        >
-          <IoCloseSharp />
-        </IconButtonSecondary>
-        <IconButtonSecondary
-          btitle="Accept connection request!"
-          className="text-lg bg-green-400 text-white hover:bg-green-500 duration-300"
-        >
-          <MdDone />
-        </IconButtonSecondary>
-      </div>
-    );
+    return <AcceptOrRejectRequest request={request} />;
 
   return (
     <IconButtonSecondary
@@ -104,11 +155,10 @@ const SendRequestButton = ({ data }) => {
   const requestSent = sendRequestTempStore((state) => state?.[data._id]);
   const changeRequestStatus = sendRequestTempStore((state) => state.cache);
   const { mutate, isLoading } = useSendConnectionRequest({
-    onSuccess: (values) => {
-      console.log(values);
+    onSuccess: () => {
       changeRequestStatus({
         key: data._id,
-        value: true,
+        value: CONNECTION_REQUEST_STATUS.PENDING,
       });
     },
   });
@@ -356,13 +406,17 @@ const Filter = ({ closeTab }) => {
 const SearchFriends = ({ closeTab }) => {
   const queryClient = useQueryClient();
   const tempStoreClear = sendRequestTempStore((state) => state.clear);
+  const tempStoreBClear = acceptOrRejectRequestTempStore(
+    (state) => state.clear
+  );
 
   useEffect(() => {
     return () => {
       queryClient.removeQueries(QUERY_KEYS.SEARCH_FRIENDS);
       tempStoreClear();
+      tempStoreBClear();
     };
-  }, [queryClient, tempStoreClear]);
+  }, [queryClient, tempStoreClear, tempStoreBClear]);
 
   return (
     <motion.div
