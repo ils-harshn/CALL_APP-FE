@@ -24,10 +24,7 @@ import { useQueryClient } from "react-query";
 import QUERY_KEYS from "../../../apis/queryKeys";
 import { useProfile } from "../../../apis/auth/queryHooks";
 import { MdDone } from "react-icons/md";
-import {
-  acceptOrRejectRequestTempStore,
-  sendRequestTempStore,
-} from "../../../store/sendRequestTempStore";
+import { sendRequestTempStore } from "../../../store/sendRequestTempStore";
 
 export const CONNECTION_REQUEST_STATUS = {
   PENDING: "pending",
@@ -49,12 +46,10 @@ const MemberSkeleton = () => {
 };
 
 const AcceptOrRejectRequest = ({ request }) => {
-  const requestStatus = acceptOrRejectRequestTempStore(
+  const requestStatus = sendRequestTempStore(
     (state) => state?.[request.requester]
   );
-  const changeRequestStatus = acceptOrRejectRequestTempStore(
-    (state) => state.cache
-  );
+  const changeRequestStatus = sendRequestTempStore((state) => state.cache);
 
   const { mutate, isLoading } = useRespondOnConnectionRequest({
     onSuccess: (values) => {
@@ -127,19 +122,36 @@ const PendingRequestButton = ({ request }) => {
   );
 };
 
+const UnBlockRequestButton = ({ request }) => {
+  const requestStatus = sendRequestTempStore(
+    (state) => state?.[request.requester]
+  );
+  const changeRequestStatus = sendRequestTempStore((state) => state.cache);
+
+  if (requestStatus) return <AcceptOrRejectRequest request={request} />;
+
+  return (
+    <IconButtonSecondary
+      onClick={() =>
+        changeRequestStatus({
+          key: request.requester,
+          value: CONNECTION_REQUEST_STATUS.PENDING,
+        })
+      }
+      btitle="Accept the rejected connection request!"
+      className="text-lg bg-purple-400 text-white hover:bg-purple-500 duration-300"
+    >
+      <CgUnblock />
+    </IconButtonSecondary>
+  );
+};
+
 const RejectedRequestButton = ({ request }) => {
   const { data, isLoading } = useProfile();
   if (isLoading) return null;
 
   if (data._id === request.recipient)
-    return (
-      <IconButtonSecondary
-        btitle="Accept the rejected connection request!"
-        className="text-lg bg-purple-400 text-white hover:bg-purple-500 duration-300"
-      >
-        <CgUnblock />
-      </IconButtonSecondary>
-    );
+    return <UnBlockRequestButton request={request} />;
 
   return (
     <IconButtonSecondary
@@ -405,18 +417,16 @@ const Filter = ({ closeTab }) => {
 
 const SearchFriends = ({ closeTab }) => {
   const queryClient = useQueryClient();
-  const tempStoreClear = sendRequestTempStore((state) => state.clear);
-  const tempStoreBClear = acceptOrRejectRequestTempStore(
+  const sendRequestTempStoreClear = sendRequestTempStore(
     (state) => state.clear
   );
 
   useEffect(() => {
     return () => {
       queryClient.removeQueries(QUERY_KEYS.SEARCH_FRIENDS);
-      tempStoreClear();
-      tempStoreBClear();
+      sendRequestTempStoreClear();
     };
-  }, [queryClient, tempStoreClear, tempStoreBClear]);
+  }, [queryClient, sendRequestTempStoreClear]);
 
   return (
     <motion.div

@@ -11,15 +11,3 @@ export const sendRequestTempStore = create((set) => ({
       true
     ),
 }));
-
-export const acceptOrRejectRequestTempStore = create((set) => ({
-  cache: (newValue) => set({ [newValue.key]: newValue.value }),
-  clear: () =>
-    set(
-      (state) => ({
-        cache: state.cache,
-        clear: state.clear,
-      }),
-      true
-    ),
-}));
