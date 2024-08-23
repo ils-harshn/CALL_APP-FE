@@ -46,16 +46,14 @@ const MemberSkeleton = () => {
 };
 
 const AcceptOrRejectRequest = ({ request }) => {
-  const requestStatus = sendRequestTempStore(
-    (state) => state?.[request.requester]
-  );
+  const requestStatus = sendRequestTempStore((state) => state?.[request._id]);
   const changeRequestStatus = sendRequestTempStore((state) => state.cache);
 
   const { mutate, isLoading } = useRespondOnConnectionRequest({
     onSuccess: (values) => {
       console.log(values);
       changeRequestStatus({
-        key: request.requester,
+        key: request._id,
         value: values?.connection?.status,
       });
     },
@@ -123,18 +121,27 @@ const PendingRequestButton = ({ request }) => {
 };
 
 const UnBlockRequestButton = ({ request }) => {
-  const requestStatus = sendRequestTempStore(
-    (state) => state?.[request.requester]
-  );
+  const requestStatus = sendRequestTempStore((state) => state?.[request._id]);
   const changeRequestStatus = sendRequestTempStore((state) => state.cache);
 
-  if (requestStatus) return <AcceptOrRejectRequest request={request} />;
+  if (requestStatus === CONNECTION_REQUEST_STATUS.PENDING)
+    return <AcceptOrRejectRequest request={request} />;
+
+  if (requestStatus === CONNECTION_REQUEST_STATUS.ACCEPTED)
+    return (
+      <IconButtonSecondary
+        btitle="Your connection request has been accepted!"
+        className="text-lg bg-green-400 text-white hover:bg-green-500 duration-300"
+      >
+        <IoCheckmarkDoneCircleOutline />
+      </IconButtonSecondary>
+    );
 
   return (
     <IconButtonSecondary
       onClick={() =>
         changeRequestStatus({
-          key: request.requester,
+          key: request._id,
           value: CONNECTION_REQUEST_STATUS.PENDING,
         })
       }
