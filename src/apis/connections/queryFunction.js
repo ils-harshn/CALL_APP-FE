@@ -7,6 +7,5 @@ export const getAcceptedConnections = async (params = {}) => {
     url: ENDPOINTS.get_accepted_connections,
     params: params,
   });
-  console.log(response.data);
   return response.data;
 };

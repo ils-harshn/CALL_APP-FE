@@ -1,5 +1,8 @@
+import { useCallback } from "react";
 import { useGetAcceptedConnections } from "../../../apis/connections/queryHooks";
 import useTabState from "../../../store/tabstate";
+import Skeleton from "react-loading-skeleton";
+import { InfiniteLoader, List as VList, AutoSizer } from "react-virtualized";
 
 export const message_status = {
   SEEN: 0,
@@ -130,12 +133,22 @@ export const status_color = {
 //   },
 // ];
 
+const MemberSkeleton = () => {
+  return (
+    <div className="px-9 py-4 flex cursor-pointer border-l">
+      <Skeleton circle width={48} height={48} />
+      <div className="ml-4 flex-grow min-w-0 py-2">
+        <Skeleton width={120} />
+        <Skeleton width={60} height={14} />
+      </div>
+      <Skeleton circle width={48} height={48} />
+    </div>
+  );
+};
+
 const Member = ({ data }) => {
   const active = useTabState((state) => state.dTSelection);
   const setActive = useTabState((state) => state.changeDTSelection);
-
-  console.log(data);
-
   return (
     <div
       onClick={() => setActive(data)}
@@ -197,33 +210,94 @@ const List = () => {
     hasNextPage,
     isFetchingNextPage,
     isLoading,
-  } = useGetAcceptedConnections({
+  } = useGetAcceptedConnections(10, {
     select: (data) => {
-      return data.pages ? data.pages.flat() : [];
+      return data.pages.flat();
     },
-    // refetchOnMount: false,
-    // refetchOnReconnect: false,
-    // staleTime: 0,
-    // cacheTime: 0,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    staleTime: Infinity,
+    cacheTime: Infinity,
   });
 
-  // console.log(data);
+  const isRowLoaded = useCallback(
+    ({ index }) => {
+      return !!data[index];
+    },
+    [data]
+  );
 
-  if (isLoading) return <div>Loading...</div>;
+  const loadMoreRows = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      return fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  if (isLoading)
+    return (
+      <div className="mt-4 h-[calc(100vh-230px)]">
+        {Array.from({ length: 4 }, (_, index) => (
+          <MemberSkeleton key={index} />
+        ))}
+      </div>
+    );
+
+  if (isLoading === false && data?.length === 0)
+    return (
+      <div className="mt-4 p-4 text-center">
+        No results found.
+        <br />
+        Try adjusting your search criteria.
+      </div>
+    );
 
   return (
-    <>
-      {data.map((connection) => (
-        <Member key={connection.user._id} data={connection.user} />
-      ))}
-    </>
+    <AutoSizer>
+      {({ height, width }) => (
+        <InfiniteLoader
+          isRowLoaded={isRowLoaded}
+          loadMoreRows={loadMoreRows}
+          rowCount={data.length + (hasNextPage ? 2 : 0)} // Adjust row count
+        >
+          {({ onRowsRendered, registerChild }) => (
+            <VList
+              height={height}
+              width={width}
+              rowHeight={80}
+              rowCount={data.length + (isFetchingNextPage ? 2 : 0)} // Adjust row count
+              rowRenderer={({ index, key, style }) => {
+                if (isFetchingNextPage && index >= data.length) {
+                  return (
+                    <div key={key} style={style}>
+                      <MemberSkeleton />
+                      <MemberSkeleton />
+                    </div>
+                  );
+                }
+
+                const connection = data[index];
+                if (!connection) return null;
+                return (
+                  <div key={key} style={style}>
+                    <Member data={connection.user} />
+                  </div>
+                );
+              }}
+              onRowsRendered={onRowsRendered}
+              ref={registerChild}
+            />
+          )}
+        </InfiniteLoader>
+      )}
+    </AutoSizer>
   );
 };
 
 const DirectTab = () => {
   return (
-    <div className="mt-4 pb-16 h-[calc(100vh-244px)] overflow-y-auto">
+    <div className="mt-4 h-[calc(100vh-244px)] overflow-y-auto">
       <List />
+      <div className="pb-16"></div>
     </div>
   );
 };
