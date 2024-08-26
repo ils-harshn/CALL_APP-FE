@@ -7,6 +7,7 @@ const ENDPOINTS = {
   search_friends: "/add-friends/search",
   send_connection_request: "/add-friends/send-connection-request",
   respond_on_connection_request: "/add-friends/respond-on-connection-request",
+  get_accepted_connections: "/connections/get-accepted",
 };
 
 export default ENDPOINTS;

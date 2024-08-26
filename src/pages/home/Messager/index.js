@@ -17,7 +17,7 @@ const dropIn = {
 const StatusBar = ({ data }) => {
   return (
     <motion.div
-      key={data.id}
+      key={data._id}
       className="bg-white flex items-center h-20 px-8 py-4 border-b m-4 rounded-full shadow-sm"
       initial="hidden"
       animate="visible"
@@ -26,14 +26,14 @@ const StatusBar = ({ data }) => {
       <div className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl relative">
         <div
           className={`absolute w-4 h-4 top-[-2px] right-[-2px] rounded-full border-2 border-white ${
-            status_color[data.status]
+            status_color[data?.status || 0]
           }`}
         ></div>
-        {data.name[0].toUpperCase()}
+        {data.username[0].toUpperCase()}
       </div>
 
       <div className="ml-2 w-36">
-        <p className="truncate font-semibold">{data.name}</p>
+        <p className="truncate font-semibold">{data.full_name}</p>
       </div>
 
       <div className="mx-4 h-[60%] border-r"></div>
@@ -78,7 +78,7 @@ const MessageInput = ({ data }) => {
       <div className="flex-grow px-8">
         <input
           placeholder="Write your message..."
-          className={`text-lg focus:outline-none w-full input-${data.id}`}
+          className={`text-lg focus:outline-none w-full input-${data._id}`}
         />
       </div>
       <div className="flex items-center">
@@ -96,7 +96,7 @@ const MessageInput = ({ data }) => {
 const MessageLists = ({ data }) => {
   return (
     <div
-      className={`message-list-${data.id} h-[calc(100vh-12rem)] overflow-y-auto`}
+      className={`message-list-${data._id} h-[calc(100vh-12rem)] overflow-y-auto`}
     ></div>
   );
 };
