@@ -1,5 +1,9 @@
 const SOCKET_EVENTS = {
+  DISCONNECT: "disconnect",
+  CONNECT_ERROR: "connect_error",
+
   CONNECTED: "CONNECTED",
+  NEW_CONNECTION_ADDED: "NEW_CONNECTION_ADDED",
 };
 
 export default SOCKET_EVENTS;
