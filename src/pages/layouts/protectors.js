@@ -24,7 +24,7 @@ export const CheckLogin = ({ children }) => {
     const handleConnect = () => {
       setSocketState(SOCKET_CONNECTING_STATES.CONNECTED);
     };
-    
+
     socket.on(SOCKET_EVENTS.CONNECTED, handleConnect);
 
     return () => {
