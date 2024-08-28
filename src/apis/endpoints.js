@@ -8,6 +8,8 @@ const ENDPOINTS = {
   send_connection_request: "/add-friends/send-connection-request",
   respond_on_connection_request: "/add-friends/respond-on-connection-request",
   get_accepted_connections: "/connections/get-accepted",
+  get_messages_on_connection: "/messages/get",
+  send_message_on_connection: "/messages/send",
 };
 
 export default ENDPOINTS;

@@ -8,6 +8,11 @@ import { CiMenuKebab } from "react-icons/ci";
 import { LuSticker } from "react-icons/lu";
 import { MdEmojiEmotions } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
+import {
+  useGetMessagesOnConnection,
+  useSendMessageOnConnection,
+} from "../../../apis/messages/queryHooks";
+import { useState } from "react";
 
 const dropIn = {
   hidden: { y: "-100vh", opacity: 0 },
@@ -17,7 +22,7 @@ const dropIn = {
 const StatusBar = ({ data }) => {
   return (
     <motion.div
-      key={data._id}
+      key={data.user._id}
       className="bg-white flex items-center h-20 px-8 py-4 border-b m-4 rounded-full shadow-sm"
       initial="hidden"
       animate="visible"
@@ -26,14 +31,14 @@ const StatusBar = ({ data }) => {
       <div className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl relative">
         <div
           className={`absolute w-4 h-4 top-[-2px] right-[-2px] rounded-full border-2 border-white ${
-            status_color[data?.status || 0]
+            status_color[data.user?.status || 0]
           }`}
         ></div>
-        {data.username[0].toUpperCase()}
+        {data.user.username[0].toUpperCase()}
       </div>
 
       <div className="ml-2 w-36">
-        <p className="truncate font-semibold">{data.full_name}</p>
+        <p className="truncate font-semibold">{data.user.full_name}</p>
       </div>
 
       <div className="mx-4 h-[60%] border-r"></div>
@@ -62,6 +67,21 @@ const StatusBar = ({ data }) => {
 };
 
 const MessageInput = ({ data }) => {
+  const [content, setContent] = useState("");
+
+  const { mutate } = useSendMessageOnConnection({
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
+
+  const sendMessage = () => {
+    mutate({
+      connection_id: data._id,
+      content: content,
+    });
+  };
+
   return (
     <div className="bg-white flex items-center h-20 px-8 py-4 border-t">
       <div className="flex items-center">
@@ -77,15 +97,20 @@ const MessageInput = ({ data }) => {
       </div>
       <div className="flex-grow px-8">
         <input
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           placeholder="Write your message..."
-          className={`text-lg focus:outline-none w-full input-${data._id}`}
+          className={`text-lg focus:outline-none w-full input-${data.user._id}`}
         />
       </div>
       <div className="flex items-center">
         <IconButtonSecondary className="text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
           <IoMicOutline />
         </IconButtonSecondary>
-        <IconButtonSecondary className="ml-2 text-lg bg-blue-400 text-white hover:bg-blue-500 duration-300">
+        <IconButtonSecondary
+          className="ml-2 text-lg bg-blue-400 text-white hover:bg-blue-500 duration-300"
+          onClick={sendMessage}
+        >
           <IoIosSend />
         </IconButtonSecondary>
       </div>
@@ -94,10 +119,33 @@ const MessageInput = ({ data }) => {
 };
 
 const MessageLists = ({ data }) => {
+  const {
+    data: messages = [],
+    // fetchNextPage,
+    // hasNextPage,
+    // isFetchingNextPage,
+    // isLoading,
+  } = useGetMessagesOnConnection(
+    {
+      on: data._id,
+    },
+    {
+      select: (data) => {
+        return data.pages.flat();
+      },
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    }
+  );
+
   return (
     <div
-      className={`message-list-${data._id} h-[calc(100vh-12rem)] overflow-y-auto`}
-    ></div>
+      className={`message-list-${data.user._id} h-[calc(100vh-12rem)] overflow-y-auto`}
+    >
+      {messages.length}
+    </div>
   );
 };
 
@@ -105,9 +153,9 @@ const Messager = ({ data }) => {
   console.log(data);
   return (
     <div className="messager">
-      <StatusBar data={data.user} />
-      <MessageLists data={data.user} />
-      <MessageInput data={data.user} />
+      <StatusBar data={data} />
+      <MessageLists data={data} />
+      <MessageInput data={data} />
     </div>
   );
 };
