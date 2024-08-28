@@ -61,9 +61,9 @@ const Member = ({ connection }) => {
   const setActive = useTabState((state) => state.changeDTSelection);
   return (
     <div
-      onClick={() => setActive(connection.user)}
+      onClick={() => setActive(connection)}
       className={`px-10 py-4 flex cursor-pointer border-l hover:bg-blue-50 ${
-        active?._id === connection.user._id
+        active?._id === connection._id
           ? "bg-blue-50 border-l-blue-500"
           : "border-l-transparent"
       }`}

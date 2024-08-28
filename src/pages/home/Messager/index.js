@@ -102,11 +102,12 @@ const MessageLists = ({ data }) => {
 };
 
 const Messager = ({ data }) => {
+  console.log(data);
   return (
     <div className="messager">
-      <StatusBar data={data} />
-      <MessageLists data={data} />
-      <MessageInput data={data} />
+      <StatusBar data={data.user} />
+      <MessageLists data={data.user} />
+      <MessageInput data={data.user} />
     </div>
   );
 };
