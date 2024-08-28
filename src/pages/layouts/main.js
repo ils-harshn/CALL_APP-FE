@@ -19,7 +19,7 @@ const SocketDataEventsListener = () => {
           if (!oldData) return oldData;
           const newPages = oldData.pages.map((page, pageIndex) => {
             const filtered_page = page.filter(
-              (conn) => conn !== newConnection._id
+              (conn) => conn._id !== newConnection._id
             );
 
             if (pageIndex === 0) {
