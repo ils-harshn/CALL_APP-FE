@@ -7,7 +7,7 @@ export function DTMformatDate(timestamp) {
   } else if (isYesterday(date)) {
     return "Yesterday";
   } else if (isThisWeek(date)) {
-    return format(date, "EEEE"); // Returns day of the week, e.g., 'Monday'
+    return format(date, "EEE"); // Returns day of the week, e.g., 'Mon'
   } else if (isThisYear(date)) {
     return format(date, "dd/MM"); // Returns date in format DD/MM
   } else {
