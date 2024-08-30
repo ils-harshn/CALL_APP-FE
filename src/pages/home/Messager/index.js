@@ -12,7 +12,7 @@ import {
   useGetMessagesOnConnection,
   useSendMessageOnConnection,
 } from "../../../apis/messages/queryHooks";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { userStatusStore } from "../../../store/userStatusStore";
 
 const dropIn = {
@@ -79,49 +79,102 @@ const StatusBar = ({ data }) => {
 
 const MessageInput = ({ data }) => {
   const [content, setContent] = useState("");
+  const textareaRef = useRef();
+  const submitBtnRef = useRef();
 
   const { mutate } = useSendMessageOnConnection({});
 
-  const sendMessage = () => {
+  const sendMessage = (e) => {
+    e.preventDefault();
     mutate({
       connection_id: data._id,
       content: content,
     });
+
+    setContent("");
   };
 
+  useEffect(() => {
+    function calcHeight(value) {
+      let numberOfLineBreaks = (value.match(/\n/g) || []).length;
+      let newHeight = 16 + 12 + 2 + numberOfLineBreaks * (16 + 12);
+      return newHeight;
+    }
+
+    const handleKeyUp = () => {
+      if (textareaRef.current) {
+        const maxHeight = window.innerHeight * 0.4;
+        const newHeight = calcHeight(textareaRef.current.value);
+        textareaRef.current.style.height = `${Math.min(
+          newHeight,
+          maxHeight
+        )}px`;
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Enter") {
+        if (e.shiftKey) {
+          return;
+        }
+        e.preventDefault();
+        submitBtnRef?.current.click();
+      }
+    };
+
+    const textareaElement = textareaRef.current;
+
+    if (textareaElement) {
+      handleKeyUp();
+      textareaElement.addEventListener("keyup", handleKeyUp);
+      textareaElement.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      if (textareaElement) {
+        textareaElement.removeEventListener("keyup", handleKeyUp);
+        textareaElement.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+  }, []);
+
   return (
-    <div className="bg-white flex items-center h-20 px-8 py-4 border-t">
-      <div className="flex items-center">
-        <IconButtonSecondary className="text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
-          <LuSticker />
-        </IconButtonSecondary>
-        <IconButtonSecondary className="ml-2 text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
-          <MdEmojiEmotions />
-        </IconButtonSecondary>
-        <IconButtonSecondary className="ml-2 text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
-          <IoAddOutline />
-        </IconButtonSecondary>
+    <form onSubmit={sendMessage}>
+      <div className="bg-white flex items-end h-min-20 px-8 py-4 border-t">
+        <div className="flex items-center">
+          <IconButtonSecondary className="text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
+            <LuSticker />
+          </IconButtonSecondary>
+          <IconButtonSecondary className="ml-2 text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
+            <MdEmojiEmotions />
+          </IconButtonSecondary>
+          <IconButtonSecondary className="ml-2 text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
+            <IoAddOutline />
+          </IconButtonSecondary>
+        </div>
+        <div className="flex-grow px-8">
+          <textarea
+            ref={textareaRef}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Write your message..."
+            className={`text-lg focus:outline-none w-full input-${data.user._id} resize-none no-scrollbar`}
+          />
+        </div>
+        <div className="flex items-center">
+          <IconButtonSecondary className="text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
+            <IoMicOutline />
+          </IconButtonSecondary>
+          <IconButtonSecondary
+            nref={submitBtnRef}
+            type="submit"
+            className="ml-2 text-lg bg-blue-400 text-white hover:bg-blue-500 duration-300"
+          >
+            <IoIosSend />
+          </IconButtonSecondary>
+        </div>
       </div>
-      <div className="flex-grow px-8">
-        <input
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Write your message..."
-          className={`text-lg focus:outline-none w-full input-${data.user._id}`}
-        />
-      </div>
-      <div className="flex items-center">
-        <IconButtonSecondary className="text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
-          <IoMicOutline />
-        </IconButtonSecondary>
-        <IconButtonSecondary
-          className="ml-2 text-lg bg-blue-400 text-white hover:bg-blue-500 duration-300"
-          onClick={sendMessage}
-        >
-          <IoIosSend />
-        </IconButtonSecondary>
-      </div>
-    </div>
+    </form>
   );
 };
 

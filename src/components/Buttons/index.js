@@ -47,6 +47,7 @@ export const IconButton = ({
 };
 
 export const IconButtonSecondary = ({
+  nref,
   btitle = "",
   title = "",
   children,
@@ -56,6 +57,7 @@ export const IconButtonSecondary = ({
   return (
     <>
       <button
+        ref={nref}
         title={btitle}
         className={`${className} w-10 h-10 rounded-full flex justify-center items-center`}
         {...props}
