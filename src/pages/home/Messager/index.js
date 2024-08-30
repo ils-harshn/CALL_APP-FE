@@ -90,7 +90,7 @@ const MessageInput = ({ data }) => {
   };
 
   return (
-    <div className="bg-white flex items-start h-fit px-8 py-4 border-t">
+    <div className="bg-white flex items-center h-20 px-8 py-4 border-t">
       <div className="flex items-center">
         <IconButtonSecondary className="text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
           <LuSticker />
@@ -103,11 +103,11 @@ const MessageInput = ({ data }) => {
         </IconButtonSecondary>
       </div>
       <div className="flex-grow px-8">
-        <textarea
+        <input
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Write your message..."
-          className={`text-lg focus:outline-none w-full input-${data.user._id} no-scrollbar`}
+          className={`text-lg focus:outline-none w-full input-${data.user._id}`}
         />
       </div>
       <div className="flex items-center">
