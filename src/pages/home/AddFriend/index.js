@@ -51,7 +51,6 @@ const AcceptOrRejectRequest = ({ request }) => {
 
   const { mutate, isLoading } = useRespondOnConnectionRequest({
     onSuccess: (values) => {
-      console.log(values);
       changeRequestStatus({
         key: request._id,
         value: values?.connection?.status,

@@ -78,11 +78,7 @@ const StatusBar = ({ data }) => {
 const MessageInput = ({ data }) => {
   const [content, setContent] = useState("");
 
-  const { mutate } = useSendMessageOnConnection({
-    onSuccess: (data) => {
-      console.log(data);
-    },
-  });
+  const { mutate } = useSendMessageOnConnection({});
 
   const sendMessage = () => {
     mutate({
@@ -159,7 +155,6 @@ const MessageLists = ({ data }) => {
 };
 
 const Messager = ({ data }) => {
-  console.log(data, "asdasd");
   return (
     <div className="messager">
       <StatusBar data={data} />
