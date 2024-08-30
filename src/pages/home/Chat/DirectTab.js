@@ -1,9 +1,12 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useGetAcceptedConnections } from "../../../apis/connections/queryHooks";
 import useTabState from "../../../store/tabstate";
 import Skeleton from "react-loading-skeleton";
 import { InfiniteLoader, List as VList, AutoSizer } from "react-virtualized";
 import { DTMformatDate } from "../../../utils/dateFormaters";
+import SOCKET_EVENTS from "../../../apis/socket/events";
+import useSocketStore from "../../../store/socketStateStore";
+import { userStatusStore } from "../../../store/userStatusStore";
 
 export const message_status = {
   SEEN: "seen",
@@ -38,7 +41,7 @@ export const status = {
 };
 
 export const status_color = {
-  [status.OFFLINE]: "bg-slate-500",
+  [status.OFFLINE]: "bg-red-500",
   [status.ONLINE]: "bg-green-500",
   [status.DND]: "bg-yellow-500",
 };
@@ -56,6 +59,37 @@ const MemberSkeleton = () => {
   );
 };
 
+const MemberStatus = ({ user }) => {
+  const socket = useSocketStore((state) => state.socket);
+  const user_status = userStatusStore((state) => state?.[user._id]);
+  const update_status = userStatusStore((state) => state.cache);
+
+  useEffect(() => {
+    const handleStatusUpdate = (status) => {
+      update_status({
+        key: user._id,
+        value: status,
+      });
+    };
+
+    socket.on(SOCKET_EVENTS.STATUS_UPDATE(user._id), handleStatusUpdate);
+
+    if (user_status === undefined)
+      socket.emit(SOCKET_EVENTS.GET_STATUS, user._id);
+    return () => {
+      socket.off(SOCKET_EVENTS.STATUS_UPDATE(user._id), handleStatusUpdate);
+    };
+  }, [socket, user._id, user_status, update_status]);
+
+  return (
+    <div
+      className={`absolute w-4 h-4 top-[-2px] right-[-2px] rounded-full border-2 border-white ${
+        status_color[user_status ? status.ONLINE : status.OFFLINE]
+      }`}
+    ></div>
+  );
+};
+
 const Member = ({ connection }) => {
   const active = useTabState((state) => state.dTSelection);
   const setActive = useTabState((state) => state.changeDTSelection);
@@ -69,11 +103,7 @@ const Member = ({ connection }) => {
       }`}
     >
       <div className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl relative">
-        <div
-          className={`absolute w-4 h-4 top-[-2px] right-[-2px] rounded-full border-2 border-white ${
-            status_color[status.OFFLINE]
-          }`}
-        ></div>
+        <MemberStatus user={connection.user} />
         {connection.user.username[0].toUpperCase()}
       </div>
 
