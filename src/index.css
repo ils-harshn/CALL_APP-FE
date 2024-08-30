@@ -54,29 +54,29 @@ body {
 
 
 /* letter avatar css */
-.A { background-color: #f35e90; }
-.B { background-color: #33C3FF; }
-.C { background-color: #FF33A8; }
-.D { background-color: #33FF57; }
-.E { background-color: #FF5733; }
-.F { background-color: #5733FF; }
-.G { background-color: #33FFF1; }
-.H { background-color: #FF33C3; }
-.I { background-color: #33FF94; }
-.J { background-color: #FF9633; }
-.K { background-color: #335BFF; }
-.L { background-color: #FF33D1; }
-.M { background-color: #33FF73; }
-.N { background-color: #FF8333; }
-.O { background-color: #33E6FF; }
-.P { background-color: #FF33F0; }
-.Q { background-color: #33FFBA; }
-.R { background-color: #FFBD33; }
-.S { background-color: #333FFF; }
-.T { background-color: #FF33EE; }
-.U { background-color: #33FFCC; }
-.V { background-color: #FFDA33; }
-.W { background-color: #335FFF; }
-.X { background-color: #FF33FF; }
-.Y { background-color: #33FF85; }
-.Z { background-color: #FF7033; }
+.A { background-color: #f35e90; color: white; }
+.B { background-color: #33C3FF; color: white; }
+.C { background-color: #FF33A8; color: white; }
+.D { background-color: #33FF57; color: white; }
+.E { background-color: #FF5733; color: white; }
+.F { background-color: #5733FF; color: white; }
+.G { background-color: #33FFF1; color: white; }
+.H { background-color: #FF33C3; color: white; }
+.I { background-color: #33FF94; color: white; }
+.J { background-color: #FF9633; color: white; }
+.K { background-color: #335BFF; color: white; }
+.L { background-color: #FF33D1; color: white; }
+.M { background-color: #33FF73; color: white; }
+.N { background-color: #FF8333; color: white; }
+.O { background-color: #33E6FF; color: white; }
+.P { background-color: #FF33F0; color: white; }
+.Q { background-color: #33FFBA; color: white; }
+.R { background-color: #FFBD33; color: white; }
+.S { background-color: #333FFF; color: white; }
+.T { background-color: #FF33EE; color: white; }
+.U { background-color: #33FFCC; color: white; }
+.V { background-color: #FFDA33; color: white; }
+.W { background-color: #335FFF; color: white; }
+.X { background-color: #FF33FF; color: white; }
+.Y { background-color: #33FF85; color: white; }
+.Z { background-color: #FF7033; color: white; }
