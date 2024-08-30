@@ -9,8 +9,10 @@ const ContactCard = ({ data }) => {
   return (
     <div className="bg-white w-full px-4 py-8 rounded-2xl">
       <div className="flex flex-col items-center">
-        <div className="w-20 h-20 rounded-full bg-slate-100 flex-shrink-0 flex justify-center items-center text-2xl relative">
-          {data.username[0].toUpperCase()}
+        <div
+          className={`${data.full_name[0].toUpperCase()} w-20 h-20 rounded-full bg-slate-100 flex-shrink-0 flex justify-center items-center text-2xl relative`}
+        >
+          {data.full_name[0].toUpperCase()}
         </div>
         <div className="text-lg font-semibold mt-2">{data.full_name}</div>
         <div className="text-xs">{data.phone}</div>

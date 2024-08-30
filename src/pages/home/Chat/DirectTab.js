@@ -102,9 +102,11 @@ const Member = ({ connection }) => {
           : "border-l-transparent"
       }`}
     >
-      <div className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl relative">
+      <div
+        className={`${connection.user.full_name[0].toUpperCase()} w-12 h-12 rounded-2xl flex-shrink-0 flex justify-center items-center text-xl relative`}
+      >
         <MemberStatus user={connection.user} />
-        {connection.user.username[0].toUpperCase()}
+        {connection.user.full_name[0].toUpperCase()}
       </div>
 
       <div className="ml-4 flex-grow min-w-0">

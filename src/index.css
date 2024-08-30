@@ -40,3 +40,43 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #d7ebf7;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+
+/* letter avatar css */
+.A { background-color: #f35e90; }
+.B { background-color: #33C3FF; }
+.C { background-color: #FF33A8; }
+.D { background-color: #33FF57; }
+.E { background-color: #FF5733; }
+.F { background-color: #5733FF; }
+.G { background-color: #33FFF1; }
+.H { background-color: #FF33C3; }
+.I { background-color: #33FF94; }
+.J { background-color: #FF9633; }
+.K { background-color: #335BFF; }
+.L { background-color: #FF33D1; }
+.M { background-color: #33FF73; }
+.N { background-color: #FF8333; }
+.O { background-color: #33E6FF; }
+.P { background-color: #FF33F0; }
+.Q { background-color: #33FFBA; }
+.R { background-color: #FFBD33; }
+.S { background-color: #333FFF; }
+.T { background-color: #FF33EE; }
+.U { background-color: #33FFCC; }
+.V { background-color: #FFDA33; }
+.W { background-color: #335FFF; }
+.X { background-color: #FF33FF; }
+.Y { background-color: #33FF85; }
+.Z { background-color: #FF7033; }

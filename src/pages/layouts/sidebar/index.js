@@ -75,10 +75,10 @@ const UserProfile = () => {
     return <Skeleton width={40} height={40} style={{ borderRadius: "50%" }} />;
   return (
     <div
-      className="w-10 h-10 rounded-full border flex justify-center items-center"
+      className={`${data?.full_name[0]?.toUpperCase()} w-10 h-10 rounded-full border flex justify-center items-center`}
       title={data?.username}
     >
-      {data?.username[0]?.toUpperCase()}
+      {data?.full_name[0]?.toUpperCase()}
     </div>
   );
 };

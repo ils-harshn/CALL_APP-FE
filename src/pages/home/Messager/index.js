@@ -41,9 +41,11 @@ const StatusBar = ({ data }) => {
       animate="visible"
       variants={dropIn}
     >
-      <div className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl relative">
+      <div
+        className={`${data.user.full_name[0].toUpperCase()} w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl relative`}
+      >
         <Status data={data} />
-        {data.user.username[0].toUpperCase()}
+        {data.user.full_name[0].toUpperCase()}
       </div>
 
       <div className="ml-2 w-36">
@@ -88,7 +90,7 @@ const MessageInput = ({ data }) => {
   };
 
   return (
-    <div className="bg-white flex items-center h-20 px-8 py-4 border-t">
+    <div className="bg-white flex items-start h-fit px-8 py-4 border-t">
       <div className="flex items-center">
         <IconButtonSecondary className="text-lg bg-blue-100 text-blue-500 hover:bg-blue-200 duration-300">
           <LuSticker />
@@ -101,11 +103,11 @@ const MessageInput = ({ data }) => {
         </IconButtonSecondary>
       </div>
       <div className="flex-grow px-8">
-        <input
+        <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Write your message..."
-          className={`text-lg focus:outline-none w-full input-${data.user._id}`}
+          className={`text-lg focus:outline-none w-full input-${data.user._id} no-scrollbar`}
         />
       </div>
       <div className="flex items-center">
@@ -146,9 +148,7 @@ const MessageLists = ({ data }) => {
   );
 
   return (
-    <div
-      className={`message-list-${data.user._id} h-[calc(100vh-12rem)] overflow-y-auto`}
-    >
+    <div className={`message-list-${data.user._id} flex-grow overflow-y-auto`}>
       {messages.length}
     </div>
   );
@@ -156,7 +156,7 @@ const MessageLists = ({ data }) => {
 
 const Messager = ({ data }) => {
   return (
-    <div className="messager">
+    <div className="messager flex flex-col h-screen">
       <StatusBar data={data} />
       <MessageLists data={data} />
       <MessageInput data={data} />

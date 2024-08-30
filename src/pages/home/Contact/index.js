@@ -19,9 +19,9 @@ const ContactTabBox = ({ data }) => {
     >
       <div
         onClick={() => setActive(data)}
-        className="w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl relative"
+        className={`${data.full_name[0].toUpperCase()} w-12 h-12 rounded-2xl bg-slate-100 flex-shrink-0 flex justify-center items-center text-xl relative`}
       >
-        {data.username[0].toUpperCase()}
+        {data.full_name[0].toUpperCase()}
       </div>
 
       <div onClick={() => setActive(data)} className="ml-4 flex-grow min-w-0">
