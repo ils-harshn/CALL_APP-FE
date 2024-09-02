@@ -13,7 +13,9 @@ export const useGetMessagesOnConnection = (payload = {}, config = {}) =>
     },
     queryKey: [QUERY_KEYS.GET_MESSAGES_ON_CONNECTION, payload],
     getNextPageParam: (lastPage, pages) => {
-      return lastPage.length > 0 ? pages.length + 1 : undefined;
+      return lastPage.length > 0
+        ? (pages.reduce((sum, arr) => sum + arr.length, 0)) + 1
+        : undefined;
     },
     ...commonConfig,
     ...config,

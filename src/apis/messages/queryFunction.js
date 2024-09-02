@@ -6,7 +6,7 @@ export const getMessagesOnConnection = async (payload, pageParam) => {
     method: "get",
     url: ENDPOINTS.get_messages_on_connection,
     params: {
-      page: pageParam,
+      offset: pageParam,
       limit: 10,
       connection_id: payload?.on,
     },

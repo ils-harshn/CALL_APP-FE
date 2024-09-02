@@ -14,6 +14,13 @@ import {
 } from "../../../apis/messages/queryHooks";
 import { useEffect, useRef, useState } from "react";
 import { userStatusStore } from "../../../store/userStatusStore";
+import {
+  InfiniteLoader,
+  List,
+  AutoSizer,
+  CellMeasurer,
+  CellMeasurerCache,
+} from "react-virtualized";
 
 const dropIn = {
   hidden: { y: "-100vh", opacity: 0 },
@@ -181,17 +188,17 @@ const MessageInput = ({ data }) => {
 const MessageLists = ({ data }) => {
   const {
     data: messages = [],
-    // fetchNextPage,
-    // hasNextPage,
-    // isFetchingNextPage,
-    // isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
   } = useGetMessagesOnConnection(
     {
       on: data._id,
     },
     {
       select: (data) => {
-        return data.pages.flat();
+        return data.pages.flat().reverse(); // Reverse the messages array
       },
       refetchOnMount: false,
       refetchOnReconnect: false,
@@ -200,9 +207,89 @@ const MessageLists = ({ data }) => {
     }
   );
 
+  const cache = useRef(
+    new CellMeasurerCache({
+      fixedWidth: true,
+      minHeight: 50,
+    })
+  );
+
+  const loadMoreItems =
+    isLoading || isFetchingNextPage ? () => {} : fetchNextPage;
+
+  const isItemLoaded = ({ index }) => !hasNextPage || index < messages.length;
+
+  const rowCount = hasNextPage ? messages.length + 1 : messages.length;
+
+  const rowRenderer = ({ key, index, parent, style }) => {
+    const messageIndex = rowCount - 1 - index; // Reverse the index
+    const message = messages[messageIndex];
+
+    if (!isItemLoaded({ index: messageIndex })) {
+      return (
+        <CellMeasurer
+          key={key}
+          cache={cache.current}
+          parent={parent}
+          columnIndex={0}
+          rowIndex={index}
+        >
+          {({ measure }) => (
+            <div style={style} onLoad={measure}>
+              Loading...
+            </div>
+          )}
+        </CellMeasurer>
+      );
+    }
+
+    return (
+      <CellMeasurer
+        key={key}
+        cache={cache.current}
+        parent={parent}
+        columnIndex={0}
+        rowIndex={index}
+      >
+        {({ measure }) => (
+          <div style={style} onLoad={measure}>
+            <div className="max-w-[20%]">{message.content}</div>
+          </div>
+        )}
+      </CellMeasurer>
+    );
+  };
+
   return (
-    <div className={`message-list-${data.user._id} flex-grow overflow-y-auto`}>
-      {messages.length}
+    <div className={`message-list-${data.user._id} flex-grow`}>
+      {messages.length === 0 ? (
+        <p>No messages yet.</p>
+      ) : (
+        <AutoSizer>
+          {({ width, height }) => (
+            <InfiniteLoader
+              isRowLoaded={isItemLoaded}
+              loadMoreRows={loadMoreItems}
+              rowCount={rowCount}
+              threshold={1} // Start loading when 1 item from the top
+            >
+              {({ onRowsRendered, registerChild }) => (
+                <List
+                  ref={registerChild}
+                  width={width}
+                  height={height}
+                  deferredMeasurementCache={cache.current}
+                  rowCount={rowCount}
+                  rowHeight={cache.current.rowHeight}
+                  rowRenderer={rowRenderer}
+                  onRowsRendered={onRowsRendered}
+                  scrollToIndex={rowCount - 1} // Scroll to the bottom initially
+                />
+              )}
+            </InfiniteLoader>
+          )}
+        </AutoSizer>
+      )}
     </div>
   );
 };

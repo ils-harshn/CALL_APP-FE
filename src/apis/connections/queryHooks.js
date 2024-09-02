@@ -14,7 +14,7 @@ export const useGetAcceptedConnections = (limit = 10, config = {}) =>
     queryKey: [QUERY_KEYS.GET_ACCEPTED_CONNECTIONS],
     getNextPageParam: (lastPage, pages) => {
       return lastPage.length > 0
-        ? pages.reduce((sum, arr) => sum + arr.length, 0)
+        ? pages.reduce((sum, arr) => sum + arr.length, 0) + 1
         : undefined;
     },
     ...commonConfig,
