@@ -198,7 +198,7 @@ const MessageLists = ({ data }) => {
     },
     {
       select: (data) => {
-        return data.pages.flat().reverse(); // Reverse the messages array
+        return data.pages.flat(); // Reverse the messages array
       },
       refetchOnMount: false,
       refetchOnReconnect: false,
