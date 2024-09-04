@@ -11,10 +11,15 @@ export const useGetMessagesOnConnection = (payload = {}, config = {}) =>
     queryFn: ({ pageParam = 0 }) => {
       return getMessagesOnConnection(payload, pageParam);
     },
-    queryKey: [QUERY_KEYS.GET_MESSAGES_ON_CONNECTION, payload],
+    queryKey: [
+      QUERY_KEYS.GET_MESSAGES_ON_CONNECTION,
+      {
+        on: payload.on,
+      },
+    ],
     getNextPageParam: (lastPage, pages) => {
       return lastPage.length > 0
-        ? (pages.reduce((sum, arr) => sum + arr.length, 0))
+        ? pages.reduce((sum, arr) => sum + arr.length, 0)
         : undefined;
     },
     ...commonConfig,

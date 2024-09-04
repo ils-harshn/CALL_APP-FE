@@ -22,6 +22,7 @@ import {
 } from "react-virtualized";
 import { useProfile } from "../../../apis/auth/queryHooks";
 import { MessageDateTimeFormatter } from "../../../utils/dateFormaters";
+import { messagesStore } from "../../../store/messagesStore";
 
 const dropIn = {
   hidden: { y: "-100vh", opacity: 0 },
@@ -224,8 +225,8 @@ const Message = ({ data, withUser }) => {
       <div
         className={`max-w-[60%] text-wrap break-words rounded-3xl px-8 py-4 font-semibold cursor-pointer ${
           isSender
-            ? "mr-4 text-black bg-slate-200 hover:bg-blue-100 duration-300 rounded-tr-none"
-            : "ml-4 text-white bg-blue-500 hover:bg-blue-400 duration-300 rounded-tl-none"
+            ? "mr-4 text-black bg-slate-200 hover:bg-blue-100 rounded-tr-none"
+            : "ml-4 text-white bg-blue-500 hover:bg-blue-400 rounded-tl-none"
         }`}
       >
         {data.content}
@@ -240,6 +241,10 @@ const cache = new CellMeasurerCache({
 });
 
 const MessageLists = ({ on }) => {
+  const realTimeMessages = messagesStore(
+    (state) => state.cache?.[on._id] || []
+  );
+
   const {
     data: messages = [],
     fetchNextPage,
@@ -252,7 +257,7 @@ const MessageLists = ({ on }) => {
     },
     {
       select: (data) => {
-        return data.pages.flat().reverse(); // Keep the messages in the original order
+        return [...data.pages.flat().reverse(), ...realTimeMessages]; // Keep the messages in the original order
       },
       refetchOnMount: false,
       refetchOnReconnect: false,
