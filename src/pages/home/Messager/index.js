@@ -15,12 +15,13 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { userStatusStore } from "../../../store/userStatusStore";
 import {
-  InfiniteLoader,
   List,
   AutoSizer,
   CellMeasurer,
   CellMeasurerCache,
 } from "react-virtualized";
+import { useProfile } from "../../../apis/auth/queryHooks";
+import { MessageDateTimeFormatter } from "../../../utils/dateFormaters";
 
 const dropIn = {
   hidden: { y: "-100vh", opacity: 0 },
@@ -185,7 +186,60 @@ const MessageInput = ({ data }) => {
   );
 };
 
-const MessageLists = ({ data }) => {
+const Message = ({ data, withUser }) => {
+  const { data: user } = useProfile();
+  const isSender = user._id === data.sender;
+
+  if (data.type === "system") {
+    return (
+      <div className="flex justify-center">
+        <div className="px-4 py-1 bg-amber-300 rounded-full text-xs italic font-bold">
+          {data.content}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`my-2 w-full h-full flex flex-col text-sm ${
+        isSender ? "items-end" : "items-start"
+      }`}
+    >
+      {isSender ? (
+        <div className="mr-5">
+          <span className="font-semibold">You</span>
+          <span className="ml-2 text-xs">
+            {MessageDateTimeFormatter(data.updatedAt)}
+          </span>
+        </div>
+      ) : (
+        <div className="ml-5">
+          <span className="font-semibold">{withUser.full_name}</span>
+          <span className="ml-2 text-xs">
+            {MessageDateTimeFormatter(data.updatedAt)}
+          </span>
+        </div>
+      )}
+      <div
+        className={`max-w-[60%] text-wrap break-words rounded-3xl px-8 py-4 font-semibold cursor-pointer ${
+          isSender
+            ? "mr-4 text-black bg-slate-200 hover:bg-blue-100 duration-300 rounded-tr-none"
+            : "ml-4 text-white bg-blue-500 hover:bg-blue-400 duration-300 rounded-tl-none"
+        }`}
+      >
+        {data.content}
+      </div>
+    </div>
+  );
+};
+
+const cache = new CellMeasurerCache({
+  fixedWidth: true,
+  defaultHeight: 50,
+});
+
+const MessageLists = ({ on }) => {
   const {
     data: messages = [],
     fetchNextPage,
@@ -194,11 +248,11 @@ const MessageLists = ({ data }) => {
     isLoading,
   } = useGetMessagesOnConnection(
     {
-      on: data._id,
+      on: on._id,
     },
     {
       select: (data) => {
-        return data.pages.flat(); // Reverse the messages array
+        return data.pages.flat().reverse(); // Keep the messages in the original order
       },
       refetchOnMount: false,
       refetchOnReconnect: false,
@@ -207,89 +261,72 @@ const MessageLists = ({ data }) => {
     }
   );
 
-  const cache = useRef(
-    new CellMeasurerCache({
-      fixedWidth: true,
-      minHeight: 50,
-    })
-  );
+  const listRef = useRef(null);
 
-  const loadMoreItems =
-    isLoading || isFetchingNextPage ? () => {} : fetchNextPage;
-
-  const isItemLoaded = ({ index }) => !hasNextPage || index < messages.length;
-
-  const rowCount = hasNextPage ? messages.length + 1 : messages.length;
-
-  const rowRenderer = ({ key, index, parent, style }) => {
-    const messageIndex = rowCount - 1 - index; // Reverse the index
-    const message = messages[messageIndex];
-
-    if (!isItemLoaded({ index: messageIndex })) {
-      return (
-        <CellMeasurer
-          key={key}
-          cache={cache.current}
-          parent={parent}
-          columnIndex={0}
-          rowIndex={index}
-        >
-          {({ measure }) => (
-            <div style={style} onLoad={measure}>
-              Loading...
-            </div>
-          )}
-        </CellMeasurer>
-      );
+  const handleScroll = ({ scrollTop }) => {
+    if (scrollTop === 0 && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
+  };
+
+  const rowRenderer = ({ index, key, parent, style }) => {
+    const message = messages[index];
 
     return (
       <CellMeasurer
         key={key}
-        cache={cache.current}
+        cache={cache}
         parent={parent}
         columnIndex={0}
         rowIndex={index}
       >
-        {({ measure }) => (
-          <div style={style} onLoad={measure}>
-            <div className="max-w-[20%]">{message.content}</div>
+        {({ registerChild }) => (
+          <div ref={registerChild} style={style}>
+            <Message data={message} withUser={on.user} />
           </div>
         )}
       </CellMeasurer>
     );
   };
 
+  useEffect(() => {
+    if (
+      !isFetchingNextPage &&
+      messages.length &&
+      hasNextPage &&
+      listRef.current
+    ) {
+      listRef.current.scrollToRow(
+        messages.length > 10 ? 10 : messages.length - 1
+      );
+    }
+  }, [isLoading, isFetchingNextPage, messages.length, hasNextPage]);
+
+  useEffect(() => {
+    window.addEventListener("resize", () => cache.clearAll());
+    return () => {
+      window.removeEventListener("resize", () => cache.clearAll());
+    };
+  }, []);
+
   return (
-    <div className={`message-list-${data.user._id} flex-grow`}>
-      {messages.length === 0 ? (
-        <p>No messages yet.</p>
-      ) : (
-        <AutoSizer>
-          {({ width, height }) => (
-            <InfiniteLoader
-              isRowLoaded={isItemLoaded}
-              loadMoreRows={loadMoreItems}
-              rowCount={rowCount}
-              threshold={1} // Start loading when 1 item from the top
-            >
-              {({ onRowsRendered, registerChild }) => (
-                <List
-                  ref={registerChild}
-                  width={width}
-                  height={height}
-                  deferredMeasurementCache={cache.current}
-                  rowCount={rowCount}
-                  rowHeight={cache.current.rowHeight}
-                  rowRenderer={rowRenderer}
-                  onRowsRendered={onRowsRendered}
-                  scrollToIndex={rowCount - 1} // Scroll to the bottom initially
-                />
-              )}
-            </InfiniteLoader>
-          )}
-        </AutoSizer>
-      )}
+    <div className="flex-grow">
+      <AutoSizer>
+        {({ height, width }) => (
+          <List
+            ref={listRef}
+            width={width}
+            height={height}
+            rowCount={messages.length}
+            rowHeight={cache.rowHeight}
+            deferredMeasurementCache={cache}
+            rowRenderer={rowRenderer}
+            onScroll={handleScroll}
+            scrollToAlignment="start"
+            overscanRowCount={5}
+          />
+        )}
+      </AutoSizer>
     </div>
   );
 };
@@ -298,7 +335,7 @@ const Messager = ({ data }) => {
   return (
     <div className="messager flex flex-col h-screen">
       <StatusBar data={data} />
-      <MessageLists data={data} />
+      <MessageLists on={data} />
       <MessageInput data={data} />
     </div>
   );
