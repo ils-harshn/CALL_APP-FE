@@ -279,6 +279,11 @@ const MessageLists = ({ on }) => {
     };
   }, []);
 
+
+  useEffect(() => {
+    cache.clearAll();
+  }, [data.length])
+
   if (isLoading)
     return (
       <div className="mt-4 flex-grow">
