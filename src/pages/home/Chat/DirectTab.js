@@ -8,6 +8,7 @@ import SOCKET_EVENTS from "../../../apis/socket/events";
 import useSocketStore from "../../../store/socketStateStore";
 import { userStatusStore } from "../../../store/userStatusStore";
 import { useProfile } from "../../../apis/auth/queryHooks";
+import { messagesSeenStatusStore } from "../../../store/messagesSeenStatusStore";
 
 export const message_status = {
   SEEN: "seen",
@@ -97,6 +98,9 @@ const Member = ({ connection }) => {
   const setActive = useTabState((state) => state.changeDTSelection);
 
   const isSender = user._id === connection.last_message.sender;
+  const is_last_message_seen = messagesSeenStatusStore(
+    (state) => state?.[connection.last_message._id]
+  );
 
   return (
     <div
@@ -126,21 +130,33 @@ const Member = ({ connection }) => {
       <div className="text-xs flex flex-col justify-center ml-4">
         <p>{DTMformatDate(connection.last_message.updatedAt)}</p>
         {isSender ? (
-          <>
-            <p
-              className={`${
-                message_status_map[
-                  connection.last_message?.status || message_status.SEEN
-                ].color
-              } font-bold`}
-            >
-              {
-                message_status_map[
-                  connection.last_message?.status || message_status.SEEN
-                ].text
-              }
-            </p>
-          </>
+          is_last_message_seen ? (
+            <>
+              <p
+                className={`${
+                  message_status_map[message_status.SEEN].color
+                } font-bold`}
+              >
+                {message_status_map[message_status.SEEN].text}
+              </p>
+            </>
+          ) : (
+            <>
+              <p
+                className={`${
+                  message_status_map[
+                    connection.last_message?.status || message_status.SEEN
+                  ].color
+                } font-bold`}
+              >
+                {
+                  message_status_map[
+                    connection.last_message?.status || message_status.SEEN
+                  ].text
+                }
+              </p>
+            </>
+          )
         ) : (
           <div className="rounded-full w-3 h-3 bg-green-400 mt-1"></div>
         )}
