@@ -102,9 +102,20 @@ const Member = ({ connection }) => {
     (state) => state?.[connection.last_message._id]
   );
 
+  const cache_last_message_if_receiver_on_click_connection =
+    messagesSeenStatusStore((state) => state.cache);
+
   return (
     <div
-      onClick={() => setActive(connection)}
+      onClick={() => {
+        setActive(connection);
+        if (user._id !== connection.last_message.sender) {
+          cache_last_message_if_receiver_on_click_connection({
+            key: connection.last_message._id,
+            value: true,
+          });
+        }
+      }}
       className={`px-10 py-4 flex cursor-pointer border-l hover:bg-blue-50 ${
         active?._id === connection._id
           ? "bg-blue-50 border-l-blue-500"
@@ -157,7 +168,8 @@ const Member = ({ connection }) => {
               </p>
             </>
           )
-        ) : (
+        ) : connection.last_message?.status === "seen" ||
+          is_last_message_seen ? null : (
           <div className="rounded-full w-3 h-3 bg-green-400 mt-1"></div>
         )}
       </div>
