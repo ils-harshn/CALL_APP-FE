@@ -194,7 +194,7 @@ const Message = ({ data, withUser }) => {
   if (data.type === "system") {
     return (
       <div className="flex justify-center my-2">
-        <div className="px-4 py-1 bg-amber-300 rounded-full text-xs italic font-bold">
+        <div className="px-4 py-1 border rounded-full bg-green-50 text-xs italic font-semibold">
           {data.content}
         </div>
       </div>
@@ -203,33 +203,30 @@ const Message = ({ data, withUser }) => {
 
   return (
     <div
-      className={`my-2 w-full h-full flex flex-col text-sm ${
+      className={`my-2 w-full h-full flex flex-col text-base ${
         isSender ? "items-end" : "items-start"
       }`}
     >
-      {isSender ? (
-        <div className="mr-5">
-          <span className="font-semibold">You</span>
-          <span className="ml-2 text-xs">
-            {MessageDateTimeFormatter(data.updatedAt)}
-          </span>
-        </div>
-      ) : (
-        <div className="ml-5">
-          <span className="font-semibold">{withUser.full_name}</span>
-          <span className="ml-2 text-xs">
-            {MessageDateTimeFormatter(data.updatedAt)}
-          </span>
-        </div>
-      )}
+      <div className={`${isSender ? "mr-5" : "ml-5"}`}>
+        <span className="font-semibold">
+          {isSender ? "You" : withUser.full_name}
+        </span>
+      </div>
+
       <div
-        className={`max-w-[60%] text-wrap break-words rounded-3xl px-8 py-4 font-semibold cursor-pointer ${
+        className={`max-w-[60%] whitespace-pre-wrap text-wrap break-words rounded-3xl px-8 py-4 font-semibold cursor-pointer ${
           isSender
             ? "mr-4 text-black bg-slate-200 hover:bg-blue-100 rounded-tr-none"
             : "ml-4 text-white bg-blue-500 hover:bg-blue-400 rounded-tl-none"
         }`}
       >
         {data.content}
+      </div>
+
+      <div className={`${isSender ? "mr-5" : "ml-5"}`}>
+        <span className="text-xs">
+          {MessageDateTimeFormatter(data.updatedAt)}
+        </span>
       </div>
     </div>
   );
@@ -290,13 +287,7 @@ const MessageLists = ({ on }) => {
     );
 
   if (isLoading === false && data?.length === 0)
-    return (
-      <div className="mt-4 p-4 text-center">
-        No results found.
-        <br />
-        Try adjusting your search criteria.
-      </div>
-    );
+    return <div className="mt-4 p-4 text-center">No results found.</div>;
 
   return (
     <div className="mt-4 flex-grow">
