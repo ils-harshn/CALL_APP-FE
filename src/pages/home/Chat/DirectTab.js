@@ -114,7 +114,7 @@ const Member = ({ connection }) => {
           {connection.user.full_name}
         </h4>
         <p className="w-full text-ellipsis overflow-hidden whitespace-nowrap">
-          {connection.last_message.content}
+          {connection.last_message.content.slice(0, 40)}
         </p>
       </div>
 
