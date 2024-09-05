@@ -6,22 +6,30 @@ import SideBar from "./sidebar";
 import SOCKET_EVENTS from "../../apis/socket/events";
 import { useQueryClient } from "react-query";
 import QUERY_KEYS from "../../apis/queryKeys";
-import { messagesStore } from "../../store/messagesStore";
 
 const SocketDataEventsListener = () => {
   const socket = useSocketStore((state) => state.socket);
-  const addMessage = messagesStore((state) => state.addMessage);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const handleNewConnection = (newConnection) => {
-      addMessage({
-        key: newConnection._id,
-        value: {
-          on: newConnection._id,
-          ...newConnection.last_message,
-        },
-      });
+      const connectionMsgKey = [
+        QUERY_KEYS.GET_MESSAGES_ON_CONNECTION,
+        { on: newConnection._id },
+      ];
+      const existingMsgsData = queryClient.getQueryData(connectionMsgKey);
+      const newmsg = {
+        on: newConnection._id,
+        ...newConnection.last_message,
+      };
+      if (existingMsgsData) {
+        queryClient.setQueryData(connectionMsgKey, (oldData) => {
+          return {
+            ...oldData,
+            pages: [[newmsg, ...oldData.pages[0]], ...oldData.pages.slice(1)],
+          };
+        });
+      }
 
       queryClient.setQueryData(
         [QUERY_KEYS.GET_ACCEPTED_CONNECTIONS],

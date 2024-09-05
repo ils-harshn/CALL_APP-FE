@@ -22,7 +22,6 @@ import {
 } from "react-virtualized";
 import { useProfile } from "../../../apis/auth/queryHooks";
 import { MessageDateTimeFormatter } from "../../../utils/dateFormaters";
-import { messagesStore } from "../../../store/messagesStore";
 
 const dropIn = {
   hidden: { y: "-100vh", opacity: 0 },
@@ -241,10 +240,6 @@ const cache = new CellMeasurerCache({
 });
 
 const MessageLists = ({ on }) => {
-  const realTimeMessages = messagesStore(
-    (state) => state.cache?.[on._id] || []
-  );
-
   const {
     data: messages = [],
     fetchNextPage,
@@ -257,7 +252,7 @@ const MessageLists = ({ on }) => {
     },
     {
       select: (data) => {
-        return [...data.pages.flat().reverse(), ...realTimeMessages]; // Keep the messages in the original order
+        return data.pages.flat().reverse();
       },
       refetchOnMount: false,
       refetchOnReconnect: false,
@@ -312,7 +307,7 @@ const MessageLists = ({ on }) => {
     return () => {
       window.removeEventListener("resize", () => cache.clearAll());
     };
-  }, []);
+  }, [messages.length]);
 
   return (
     <div className="flex-grow">
