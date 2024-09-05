@@ -12,13 +12,14 @@ import {
   useGetMessagesOnConnection,
   useSendMessageOnConnection,
 } from "../../../apis/messages/queryHooks";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { userStatusStore } from "../../../store/userStatusStore";
 import {
   List,
   AutoSizer,
   CellMeasurer,
   CellMeasurerCache,
+  InfiniteLoader,
 } from "react-virtualized";
 import { useProfile } from "../../../apis/auth/queryHooks";
 import { MessageDateTimeFormatter } from "../../../utils/dateFormaters";
@@ -192,7 +193,7 @@ const Message = ({ data, withUser }) => {
 
   if (data.type === "system") {
     return (
-      <div className="flex justify-center">
+      <div className="flex justify-center my-2">
         <div className="px-4 py-1 bg-amber-300 rounded-full text-xs italic font-bold">
           {data.content}
         </div>
@@ -241,7 +242,7 @@ const cache = new CellMeasurerCache({
 
 const MessageLists = ({ on }) => {
   const {
-    data: messages = [],
+    data = [],
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -252,7 +253,7 @@ const MessageLists = ({ on }) => {
     },
     {
       select: (data) => {
-        return data.pages.flat().reverse();
+        return data.pages.flat();
       },
       refetchOnMount: false,
       refetchOnReconnect: false,
@@ -261,75 +262,191 @@ const MessageLists = ({ on }) => {
     }
   );
 
-  const listRef = useRef(null);
+  const isRowLoaded = useCallback(
+    ({ index }) => {
+      return !!data[index];
+    },
+    [data]
+  );
 
-  const handleScroll = ({ scrollTop }) => {
-    if (scrollTop === 0 && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
+  const loadMoreRows = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      return fetchNextPage();
     }
-  };
-
-  const rowRenderer = ({ index, key, parent, style }) => {
-    const message = messages[index];
-
-    return (
-      <CellMeasurer
-        key={key}
-        cache={cache}
-        parent={parent}
-        columnIndex={0}
-        rowIndex={index}
-      >
-        {({ registerChild }) => (
-          <div ref={registerChild} style={style}>
-            <Message data={message} withUser={on.user} />
-          </div>
-        )}
-      </CellMeasurer>
-    );
-  };
-
-  useEffect(() => {
-    if (
-      !isFetchingNextPage &&
-      messages.length &&
-      hasNextPage &&
-      listRef.current
-    ) {
-      listRef.current.scrollToRow(
-        messages.length > 10 ? 10 : messages.length - 1
-      );
-    }
-  }, [isLoading, isFetchingNextPage, messages.length, hasNextPage]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   useEffect(() => {
     window.addEventListener("resize", () => cache.clearAll());
     return () => {
       window.removeEventListener("resize", () => cache.clearAll());
     };
-  }, [messages.length]);
+  }, []);
+
+  if (isLoading)
+    return (
+      <div className="mt-4 flex-grow">
+        <div>Loading History...</div>
+      </div>
+    );
+
+  if (isLoading === false && data?.length === 0)
+    return (
+      <div className="mt-4 p-4 text-center">
+        No results found.
+        <br />
+        Try adjusting your search criteria.
+      </div>
+    );
 
   return (
-    <div className="flex-grow">
+    <div className="mt-4 flex-grow">
       <AutoSizer>
         {({ height, width }) => (
-          <List
-            ref={listRef}
-            width={width}
-            height={height}
-            rowCount={messages.length}
-            rowHeight={cache.rowHeight}
-            deferredMeasurementCache={cache}
-            rowRenderer={rowRenderer}
-            onScroll={handleScroll}
-            scrollToAlignment="start"
-            overscanRowCount={5}
-          />
+          <InfiniteLoader
+            isRowLoaded={isRowLoaded}
+            loadMoreRows={loadMoreRows}
+            rowCount={data.length + (hasNextPage ? 2 : 0)} // Adjust row count
+          >
+            {({ onRowsRendered, registerChild }) => (
+              <List
+                height={height}
+                width={width}
+                rowHeight={cache.rowHeight}
+                deferredMeasurementCache={cache}
+                rowCount={data.length + (isFetchingNextPage ? 2 : 0)} // Adjust row count
+                rowRenderer={({ index, key, parent, style }) => {
+                  if (isFetchingNextPage && index >= data.length) {
+                    return (
+                      <div key={key} style={style}>
+                        <div>Loading History...</div>
+                      </div>
+                    );
+                  }
+
+                  const message = data[index];
+                  if (!message) return null;
+                  return (
+                    <CellMeasurer
+                      key={key}
+                      cache={cache}
+                      parent={parent}
+                      columnIndex={0}
+                      rowIndex={index}
+                    >
+                      {({ registerChild }) => (
+                        <div ref={registerChild} style={style}>
+                          <Message data={message} withUser={on.user} />
+                        </div>
+                      )}
+                    </CellMeasurer>
+                  );
+                }}
+                onRowsRendered={onRowsRendered}
+                ref={registerChild}
+              />
+            )}
+          </InfiniteLoader>
         )}
       </AutoSizer>
     </div>
   );
 };
+
+// const MessageLists = ({ on }) => {
+//   const {
+//     data: messages = [],
+//     fetchNextPage,
+//     hasNextPage,
+//     isFetchingNextPage,
+//     isLoading,
+//   } = useGetMessagesOnConnection(
+//     {
+//       on: on._id,
+//     },
+//     {
+//       select: (data) => {
+//         return data.pages.flat().reverse();
+//       },
+//       refetchOnMount: false,
+//       refetchOnReconnect: false,
+//       staleTime: Infinity,
+//       cacheTime: Infinity,
+//     }
+//   );
+
+//   const listRef = useRef(null);
+
+//   const handleScroll = ({ scrollTop }) => {
+//     if (scrollTop === 0 && hasNextPage && !isFetchingNextPage) {
+//       fetchNextPage();
+//     }
+//   };
+
+//   const rowRenderer = ({ index, key, parent, style }) => {
+//     const message = messages[index];
+
+//     return (
+//       <CellMeasurer
+//         key={key}
+//         cache={cache}
+//         parent={parent}
+//         columnIndex={0}
+//         rowIndex={index}
+//       >
+//         {({ registerChild }) => (
+//           <div ref={registerChild} style={style}>
+//             <Message data={message} withUser={on.user} />
+//           </div>
+//         )}
+//       </CellMeasurer>
+//     );
+//   };
+
+//   useEffect(() => {
+//     if (
+//       !isFetchingNextPage &&
+//       messages.length &&
+//       hasNextPage &&
+//       listRef.current
+//     ) {
+//       listRef.current.scrollToRow(
+//         messages.length > 10 ? 10 : messages.length - 1
+//       );
+//     }
+//   }, [isLoading, isFetchingNextPage, messages.length, hasNextPage]);
+
+//   useEffect(() => {
+//     window.addEventListener("resize", () => cache.clearAll());
+//     return () => {
+//       window.removeEventListener("resize", () => cache.clearAll());
+//     };
+//   }, []);
+
+//   useEffect(() => {
+//     cache.clearAll();
+//   }, [messages.length]);
+
+//   return (
+//     <div className="flex-grow">
+//       <AutoSizer>
+//         {({ height, width }) => (
+//           <List
+//             ref={listRef}
+//             width={width}
+//             height={height}
+//             rowCount={messages.length}
+//             rowHeight={cache.rowHeight}
+//             deferredMeasurementCache={cache}
+//             rowRenderer={rowRenderer}
+//             onScroll={handleScroll}
+//             scrollToAlignment="end"
+//             overscanRowCount={5}
+//           />
+//         )}
+//       </AutoSizer>
+//     </div>
+//   );
+// };
 
 const Messager = ({ data }) => {
   return (
