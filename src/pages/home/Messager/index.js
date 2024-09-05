@@ -279,15 +279,16 @@ const MessageLists = ({ on }) => {
     };
   }, []);
 
-
   useEffect(() => {
     cache.clearAll();
-  }, [data.length])
+  }, [data.length]);
 
   if (isLoading)
     return (
       <div className="mt-4 flex-grow">
-        <div>Loading History...</div>
+        <div className="text-center text-sm text-slate-600 font-semibold">
+          Loading History...
+        </div>
       </div>
     );
 
@@ -314,7 +315,9 @@ const MessageLists = ({ on }) => {
                   if (isFetchingNextPage && index >= data.length) {
                     return (
                       <div key={key} style={style}>
-                        <div>Loading History...</div>
+                        <div className="text-center text-sm text-slate-600 font-semibold">
+                          Loading History...
+                        </div>
                       </div>
                     );
                   }
