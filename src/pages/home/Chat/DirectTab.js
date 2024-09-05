@@ -8,7 +8,10 @@ import SOCKET_EVENTS from "../../../apis/socket/events";
 import useSocketStore from "../../../store/socketStateStore";
 import { userStatusStore } from "../../../store/userStatusStore";
 import { useProfile } from "../../../apis/auth/queryHooks";
-import { messagesSeenStatusStore } from "../../../store/messagesSeenStatusStore";
+import {
+  messagesSeenStatusStore,
+  ownMessagesSeenStatusStore,
+} from "../../../store/messagesSeenStatusStore";
 
 export const message_status = {
   SEEN: "seen",
@@ -102,8 +105,12 @@ const Member = ({ connection }) => {
     (state) => state?.[connection.last_message._id]
   );
 
+  const last_message_if_receiver = ownMessagesSeenStatusStore(
+    (state) => state?.[connection.last_message._id]
+  );
+
   const cache_last_message_if_receiver_on_click_connection =
-    messagesSeenStatusStore((state) => state.cache);
+    ownMessagesSeenStatusStore((state) => state.cache);
 
   return (
     <div
@@ -169,7 +176,7 @@ const Member = ({ connection }) => {
             </>
           )
         ) : connection.last_message?.status === "seen" ||
-          is_last_message_seen ? null : (
+          last_message_if_receiver ? null : (
           <div className="rounded-full w-3 h-3 bg-green-400 mt-1"></div>
         )}
       </div>
