@@ -1,6 +1,13 @@
 import { motion } from "framer-motion";
 
-import { IoAddOutline, IoCall, IoMicOutline, IoSearch } from "react-icons/io5";
+import {
+  IoAddOutline,
+  IoCall,
+  IoCheckmarkDoneOutline,
+  IoCheckmarkOutline,
+  IoMicOutline,
+  IoSearch,
+} from "react-icons/io5";
 import { IconButton, IconButtonSecondary } from "../../../components/Buttons";
 import { status, status_color } from "../Chat/DirectTab";
 import { HiVolumeUp } from "react-icons/hi";
@@ -23,6 +30,9 @@ import {
 } from "react-virtualized";
 import { useProfile } from "../../../apis/auth/queryHooks";
 import { MessageDateTimeFormatter } from "../../../utils/dateFormaters";
+import { messagesSeenStatusStore } from "../../../store/messagesSeenStatusStore";
+import useSocketStore from "../../../store/socketStateStore";
+import SOCKET_EVENTS from "../../../apis/socket/events";
 
 const dropIn = {
   hidden: { y: "-100vh", opacity: 0 },
@@ -190,6 +200,14 @@ const MessageInput = ({ data }) => {
 const Message = ({ data, withUser }) => {
   const { data: user } = useProfile();
   const isSender = user._id === data.sender;
+  const socket = useSocketStore((state) => state.socket);
+  const is_seen = messagesSeenStatusStore((state) => state?.[data._id]);
+
+  useEffect(() => {
+    if (!isSender && data.status !== "seen" && is_seen === undefined) {
+      socket.emit(SOCKET_EVENTS.MARK_MESSAGE_AS_SEEN, data);
+    }
+  }, [socket, is_seen, isSender, data]);
 
   if (data.type === "system") {
     return (
@@ -223,10 +241,25 @@ const Message = ({ data, withUser }) => {
         {data.content}
       </div>
 
-      <div className={`${isSender ? "mr-5" : "ml-5"}`}>
+      <div className={`${isSender ? "mr-5" : "ml-5"} flex mt-1`}>
         <span className="text-xs">
           {MessageDateTimeFormatter(data.updatedAt)}
         </span>
+        {isSender ? (
+          <span className="ml-1">
+            {is_seen ? (
+              <IoCheckmarkDoneOutline />
+            ) : data.status === "sent" ? (
+              <IoCheckmarkOutline className="text-slate-400" />
+            ) : data.status === "seen" ? (
+              <IoCheckmarkDoneOutline />
+            ) : (
+              ""
+            )}
+          </span>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

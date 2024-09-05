@@ -6,10 +6,12 @@ import SideBar from "./sidebar";
 import SOCKET_EVENTS from "../../apis/socket/events";
 import { useQueryClient } from "react-query";
 import QUERY_KEYS from "../../apis/queryKeys";
+import { messagesSeenStatusStore } from "../../store/messagesSeenStatusStore";
 
 const SocketDataEventsListener = () => {
   const socket = useSocketStore((state) => state.socket);
   const queryClient = useQueryClient();
+  const markMessageAsSeen = messagesSeenStatusStore((state) => state.cache);
 
   useEffect(() => {
     const handleNewConnection = (newConnection) => {
@@ -54,11 +56,23 @@ const SocketDataEventsListener = () => {
       );
     };
 
+    const handleMarkedMessageAsSeen = (message) => {
+      markMessageAsSeen({
+        key: message._id,
+        value: "seen",
+      });
+    };
+
     socket.on(SOCKET_EVENTS.NEW_CONNECTION_ADDED, handleNewConnection);
+    socket.on(SOCKET_EVENTS.MARKED_MESSAGE_AS_SEEN, handleMarkedMessageAsSeen);
     return () => {
       socket.off(SOCKET_EVENTS.NEW_CONNECTION_ADDED, handleNewConnection);
+      socket.off(
+        SOCKET_EVENTS.MARKED_MESSAGE_AS_SEEN,
+        handleMarkedMessageAsSeen
+      );
     };
-  }, [socket, queryClient]);
+  }, [socket, queryClient, markMessageAsSeen]);
 
   return null;
 };
